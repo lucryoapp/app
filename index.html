@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUCRYO - Futuro da Gestão</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>LUCRYO - O Futuro da Gestão de Vendas</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Urbanist:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         :root {
-            /* Tema Dark (Padrão) */
             --bg-body: #020617;
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
@@ -18,20 +16,6 @@
             --text-dim: #94a3b8;
             --primary: #00f2ff;
             --accent: #7000ff;
-            --input-bg: rgba(0, 0, 0, 0.2);
-            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-        }
-
-        body.light-mode {
-            --bg-body: #f0f4f8;
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --text-main: #1e293b;
-            --text-dim: #475569;
-            --primary: #0ea5e9;
-            --accent: #6366f1;
-            --input-bg: #ffffff;
-            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,104 +24,95 @@
             font-family: 'Urbanist', sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            transition: background 0.5s ease;
+            overflow-x: hidden;
         }
 
         /* Efeitos de fundo (Glows) */
         .glow {
             position: absolute;
-            width: 400px;
-            height: 400px;
-            filter: blur(120px);
-            z-index: 0;
-            opacity: 0.4;
-        }
-        .glow-1 { top: -100px; left: -100px; background: var(--primary); }
-        .glow-2 { bottom: -100px; right: -100px; background: var(--accent); }
-
-        /* Container Principal (Glassmorphism) */
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            box-shadow: var(--card-shadow);
-            width: 400px;
-            padding: 40px;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-        }
-
-        h2 { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; margin-bottom: 10px; letter-spacing: -1px; }
-        p.subtitle { color: var(--text-dim); margin-bottom: 30px; font-size: 0.9rem; }
-
-        /* Inputs */
-        .input-group { position: relative; margin-bottom: 15px; }
-        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-dim); }
-        input {
-            width: 100%;
-            padding: 14px 15px 14px 45px;
-            background: var(--input-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            color: var(--text-main);
-            font-size: 1rem;
-            transition: 0.3s;
-        }
-        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
-
-        /* Botões */
-        button {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
-            font-family: 'Space Grotesk', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .btn-primary { background: linear-gradient(90deg, var(--accent), var(--primary)); color: white; box-shadow: 0 4px 15px rgba(112, 0, 255, 0.3); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(112, 0, 255, 0.5); }
-        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-        .btn-outline:hover { background: var(--primary); color: #000; }
-
-        /* Toggle de Tema */
-        .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            width: 45px;
-            height: 45px;
             border-radius: 50%;
-            cursor: pointer;
+            filter: blur(150px);
+            z-index: -1;
+            opacity: 0.5;
+        }
+        .glow-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: var(--primary); }
+        .glow-2 { bottom: 20%; right: -10%; width: 600px; height: 600px; background: var(--accent); }
+
+        /* Navbar */
+        nav {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; letter-spacing: -1px; color: #fff; text-decoration: none;}
+        .login-btn {
+            padding: 10px 24px;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .login-btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            margin-top: 50px;
+        }
+        h1 { font-family: 'Space Grotesk', sans-serif; font-size: 4rem; line-height: 1.1; margin-bottom: 20px; }
+        .highlight { background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.2rem; color: var(--text-dim); max-width: 600px; margin-bottom: 40px; line-height: 1.6; }
+        
+        .cta-btn {
+            padding: 18px 40px;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: 0.3s;
+            box-shadow: 0 8px 25px rgba(112, 0, 255, 0.4);
+        }
+        .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(112, 0, 255, 0.6); }
+
+        /* Features Glassmorphism */
+        .features { padding: 100px 5%; display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+        .feature-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 40px 30px;
+            border-radius: 20px;
+            width: 300px;
+            text-align: left;
             transition: 0.3s;
         }
+        .feature-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+        .feature-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; }
+        .feature-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; margin-bottom: 15px; }
+        .feature-card p { color: var(--text-dim); line-height: 1.6; }
 
-        /* Dashbord / Planos */
-        .badge { display: inline-block; padding: 6px 15px; border-radius: 50px; font-weight: bold; font-size: 0.75rem; margin-top: 10px; }
-        .badge-premium { background: linear-gradient(90deg, #f1c40f, #e67e22); color: #000; box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
-        .badge-basico { background: #334155; color: #f8fafc; }
-
-        .hidden { display: none; }
-        #app-container h3 { margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -145,135 +120,36 @@
     <div class="glow glow-1"></div>
     <div class="glow glow-2"></div>
 
-    <button class="theme-toggle" onclick="toggleTheme()">
-        <i class="fas fa-moon" id="theme-icon"></i>
-    </button>
+    <nav>
+        <a href="#" class="logo"><i class="fa-solid fa-arrow-trend-up" style="color: var(--primary);"></i> LUCRYO</a>
+        <!-- Este link vai enviar o cliente direto para o seu App -->
+        <a href="app.html" class="login-btn">Entrar no App</a>
+    </nav>
 
-    <div class="glass-card" id="login-container">
-        <h2>LUCRYO</h2>
-        <p class="subtitle">Bem-vindo à nova era da gestão.</p>
-        
-        <div class="input-group">
-            <i class="fas fa-envelope"></i>
-            <input type="email" id="email" placeholder="Seu e-mail profissional">
+    <header class="hero">
+        <h1>Acelere as suas vendas com a <br><span class="highlight">Gestão do Futuro</span></h1>
+        <p>Abandone as planilhas confusas. Controle pagamentos, acompanhe métricas e fature mais com a plataforma mais avançada do mercado.</p>
+        <!-- Este link vai enviar o cliente para pagar na Kiwify -->
+        <a href="https://pay.kiwify.com.br/3BdzfK1" class="cta-btn">Começar Agora</a>
+    </header>
+
+    <section class="features">
+        <div class="feature-card">
+            <i class="fas fa-bolt feature-icon"></i>
+            <h3>Automático</h3>
+            <p>Integração total e liberação de acessos em segundos. Foque em vender, nós cuidamos da tecnologia.</p>
         </div>
-        <div class="input-group">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="password" placeholder="Sua senha secreta">
+        <div class="feature-card">
+            <i class="fas fa-chart-pie feature-icon"></i>
+            <h3>Dashboard VIP</h3>
+            <p>Tenha controlo total do seu faturamento com métricas claras e um design focado na experiência.</p>
         </div>
-
-        <button class="btn-primary" onclick="login()">Acessar Painel</button>
-        <button class="btn-outline" onclick="cadastrar()">Criar Conta Grátis</button>
-    </div>
-
-    <div class="glass-card hidden" id="app-container">
-        <h2 id="plan-name">DASHBOARD</h2>
-        <div id="user-display" style="font-weight: 300; opacity: 0.8; margin-top: 5px;"></div>
-        <div id="plan-badge" class="badge"></div>
-        
-        <hr style="margin: 25px 0; border: 0; border-top: 1px solid var(--glass-border);">
-
-        <div id="content-basico" class="hidden">
-            <p style="margin-bottom: 20px;">Seu acesso atual é limitado ao básico.</p>
-            <button class="btn-primary" onclick="window.location.href='https://pay.kiwify.com.br/3BdzfK1'">Upgrade para PRO</button>
+        <div class="feature-card">
+            <i class="fas fa-shield-alt feature-icon"></i>
+            <h3>Segurança Cloud</h3>
+            <p>Os seus dados protegidos com a mesma tecnologia de base de dados utilizada pelas maiores empresas de tecnologia do mundo.</p>
         </div>
+    </section>
 
-        <div id="content-premium" class="hidden">
-            <h3 style="color: var(--primary);">ACESSO VIP LIBERADO</h3>
-            <p style="font-size: 0.9rem; margin: 15px 0;">Todas as ferramentas futuristas estão ativas.</p>
-            <button class="btn-primary" onclick="window.location.href='app.html'"><i class="fas fa-chart-line"></i> Abrir Gestão de Pedidos</button>
-            <button class="btn-outline" style="border-color: var(--accent); color: var(--accent);"><i class="fas fa-robot"></i> Automação IA</button>
-        </div>
-
-        <button onclick="logout()" style="background: transparent; color: #ff4d4d; font-size: 0.8rem; margin-top: 30px;">ENCERRAR SESSÃO</button>
-    </div>
-
-    <script>
-        const SUPABASE_URL = 'https://iazehdwsnmunglhdtize.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_rPoTbDXSDr-zHPsgbEqY9Q_vDJklNAG';
-        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // --- Lógica de Tema ---
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.getElementById('theme-icon');
-            body.classList.toggle('light-mode');
-            
-            if(body.classList.contains('light-mode')) {
-                icon.classList.replace('fa-moon', 'fa-sun');
-            } else {
-                icon.classList.replace('fa-sun', 'fa-moon');
-            }
-        }
-
-        // --- Lógica de Auth (Modo Detetive) ---
-        async function cadastrar() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            if(!email || !password) return alert("Preencha os campos!");
-
-            // 1. Cria a conta no Auth do Supabase
-            const { data, error } = await db.auth.signUp({ email, password });
-            
-            if (error) {
-                alert("Erro ao criar conta: " + error.message);
-                return;
-            }
-            
-            // 2. Tenta inserir na tabela perfis e Grita se houver erro!
-            if (data.user) {
-                const { error: insertError } = await db.from('perfis').insert([
-                    { 
-                        id: data.user.id,
-                        email: email, 
-                        plano: 'basico' 
-                    }
-                ]);
-                
-                if(insertError) {
-                    // Este é o alerta que nos vai dizer a verdade nua e crua!
-                    alert("ERRO SECRETO DO SUPABASE: " + insertError.message + " | Detalhes: " + insertError.details);
-                } else {
-                    alert("SUCESSO ABSOLUTO: O email foi guardado na tabela!");
-                }
-            }
-
-            checkUserPlan(data.user);
-        }
-
-        async function login() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const { data, error } = await db.auth.signInWithPassword({ email, password });
-            if (error) alert("Dados incorretos!");
-            else checkUserPlan(data.user);
-        }
-
-        async function checkUserPlan(user) {
-            if(!user) return;
-            const { data: perfil } = await db.from('perfis').select('plano').eq('email', user.email).single();
-
-            document.getElementById('login-container').classList.add('hidden');
-            document.getElementById('app-container').classList.remove('hidden');
-            document.getElementById('user-display').innerText = user.email;
-            
-            const badge = document.getElementById('plan-badge');
-            const plano = perfil?.plano || 'basico';
-            badge.innerText = plano.toUpperCase();
-            badge.className = 'badge ' + (plano === 'premium' || plano === 'pro' ? 'badge-premium' : 'badge-basico');
-
-            if (plano === 'premium' || plano === 'pro') {
-                document.getElementById('content-premium').classList.remove('hidden');
-                document.getElementById('content-basico').classList.add('hidden');
-            } else {
-                document.getElementById('content-basico').classList.remove('hidden');
-            }
-        }
-
-        async function logout() {
-            await db.auth.signOut();
-            window.location.reload();
-        }
-    </script>
 </body>
 </html>
