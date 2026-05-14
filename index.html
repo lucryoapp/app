@@ -1,155 +1,466 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUCRYO - O Futuro da Gestão de Vendas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Urbanist:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+    <title>LUCRYO - Chega de Caderninho, Profissionalize suas Vendas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700;800&family=Urbanist:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* Paleta Futurista Neon */
             --bg-body: #020617;
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
+            --primary: #00f2ff; /* Ciano Neon */
+            --primary-dark: #00b8cc;
+            --accent: #7000ff; /* Roxo Neon */
             --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-            --primary: #00f2ff;
-            --accent: #7000ff;
+            --text-muted: #94a3b8;
+            --premium: #a855f7;
+            --danger: #ef4444;
+            --success: #10b981;
+            --transition: all 0.3s ease;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Urbanist', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
+        h1, h2, h3, h4, .logo-lucryo, .plan-name, .plan-price { font-family: 'Space Grotesk', sans-serif; }
+        .hidden { display: none !important; }
 
-        body {
-            font-family: 'Urbanist', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            overflow-x: hidden;
-        }
-
-        /* Efeitos de fundo (Glows) */
-        .glow {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(150px);
-            z-index: -1;
-            opacity: 0.5;
-        }
+        /* Luzes de Fundo (Glows) */
+        .glow { position: absolute; border-radius: 50%; filter: blur(150px); z-index: -1; opacity: 0.4; }
         .glow-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: var(--primary); }
-        .glow-2 { bottom: 20%; right: -10%; width: 600px; height: 600px; background: var(--accent); }
+        .glow-2 { top: 40%; right: -10%; width: 600px; height: 600px; background: var(--accent); }
+        .glow-3 { bottom: -10%; left: 20%; width: 400px; height: 400px; background: var(--premium); opacity: 0.3; }
 
-        /* Navbar */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 5%;
-            background: rgba(2, 6, 23, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
-        }
-        .logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; letter-spacing: -1px; color: #fff; text-decoration: none;}
-        .login-btn {
-            padding: 10px 24px;
-            background: transparent;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-        .login-btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }
+        /* LOGO LUCRYO */
+        .logo-lucryo { font-size: 1.8rem; font-weight: 800; color: #ffffff; text-decoration: none; display: flex; align-items: center; gap: 8px; letter-spacing: 1px; }
+        .logo-lucryo i { color: var(--primary); text-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }
+        .logo-lucryo span { color: var(--primary); text-shadow: 0 0 20px rgba(0, 242, 255, 0.6); }
+        .logo-lucryo.footer-logo { justify-content: center; margin-bottom: 1rem; font-size: 2.5rem; }
 
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
-            margin-top: 50px;
-        }
-        h1 { font-family: 'Space Grotesk', sans-serif; font-size: 4rem; line-height: 1.1; margin-bottom: 20px; }
-        .highlight { background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero p { font-size: 1.2rem; color: var(--text-dim); max-width: 600px; margin-bottom: 40px; line-height: 1.6; }
+        /* HEADER GLASSMORPHISM */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 5%; background: rgba(2, 6, 23, 0.7); position: fixed; width: 100%; top: 0; z-index: 1000; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--glass-border); }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 600; transition: var(--transition); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        .nav-links a:hover { color: var(--primary); text-shadow: 0 0 10px rgba(0, 242, 255, 0.5); }
         
-        .cta-btn {
-            padding: 18px 40px;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: 0.3s;
-            box-shadow: 0 8px 25px rgba(112, 0, 255, 0.4);
-        }
-        .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(112, 0, 255, 0.6); }
+        .btn-login { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 0.6rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: bold; transition: var(--transition); font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; }
+        .btn-login:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }
+        
+        .btn-cta { background: linear-gradient(90deg, var(--accent), var(--primary)); color: white; padding: 0.6rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: bold; transition: var(--transition); box-shadow: 0 4px 15px rgba(112, 0, 255, 0.3); font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; border: none; display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(112, 0, 255, 0.5); }
 
-        /* Features Glassmorphism */
-        .features { padding: 100px 5%; display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
-        .feature-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            padding: 40px 30px;
-            border-radius: 20px;
-            width: 300px;
-            text-align: left;
-            transition: 0.3s;
-        }
-        .feature-card:hover { transform: translateY(-10px); border-color: var(--primary); }
-        .feature-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; }
-        .feature-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; margin-bottom: 15px; }
-        .feature-card p { color: var(--text-dim); line-height: 1.6; }
+        /* HERO SECTION */
+        .hero { padding: 12rem 5% 5rem; text-align: center; max-width: 1000px; margin: 0 auto; position: relative; }
+        .badge { display: inline-block; background: rgba(0, 242, 255, 0.1); color: var(--primary); padding: 0.6rem 1.2rem; border-radius: 2rem; font-weight: 700; font-size: 0.9rem; margin-bottom: 1.5rem; border: 1px solid rgba(0, 242, 255, 0.3); letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 0 20px rgba(0, 242, 255, 0.2); }
+        .hero h1 { font-size: 4rem; line-height: 1.1; margin-bottom: 1.5rem; color: white; letter-spacing: -1px; }
+        .hero h1 span { background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 2.5rem; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .hero-buttons { display: flex; justify-content: center; gap: 1rem; }
+        .btn-large { font-size: 1.1rem; padding: 1.2rem 2.5rem; border-radius: 0.8rem; }
 
+        /* FEATURES SECTION (GLASSMORPHISM) */
+        .features { padding: 5rem 5%; position: relative; z-index: 10; }
+        .section-title { text-align: center; font-size: 3rem; margin-bottom: 1rem; color: white; letter-spacing: -1px; }
+        .section-subtitle { text-align: center; color: var(--text-muted); margin-bottom: 4rem; font-size: 1.1rem; }
+        
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .feature-card { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 2.5rem; border-radius: 1.5rem; border: 1px solid var(--glass-border); transition: var(--transition); cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+        .feature-card::after { content: 'Explorar Função ➔'; position: absolute; bottom: -50px; left: 0; width: 100%; text-align: center; background: linear-gradient(0deg, rgba(0, 242, 255, 0.1) 0%, transparent 100%); color: var(--primary); padding: 15px 0 10px; font-weight: bold; font-family: 'Space Grotesk', sans-serif; transition: var(--transition); opacity: 0; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;}
+        .feature-card:hover { transform: translateY(-10px); border-color: var(--primary); padding-bottom: 3.5rem; box-shadow: 0 15px 40px rgba(0, 242, 255, 0.15); background: rgba(255, 255, 255, 0.05); }
+        .feature-card:hover::after { bottom: 0; opacity: 1; }
+        .feature-icon { width: 65px; height: 65px; background: rgba(0, 242, 255, 0.1); color: var(--primary); border-radius: 1.2rem; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 1.5rem; box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.2); }
+        .feature-card h3 { font-size: 1.5rem; margin-bottom: 1rem; color: white; }
+        .feature-card p { color: var(--text-muted); font-size: 1rem; }
+
+        /* MODAL ESTRUTURA FUTURISTA */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 2000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: rgba(255, 255, 255, 0.02); width: 95%; max-width: 1000px; border-radius: 2rem; border: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0, 242, 255, 0.1); transform: translateY(30px) scale(0.95); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; position: relative; display: flex; flex-direction: column; max-height: 90vh; }
+        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+        .modal-close { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: white; font-size: 1.2rem; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: all 0.3s; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-close:hover { background: var(--danger); border-color: var(--danger); transform: rotate(90deg); }
+        
+        .modal-body { display: flex; flex-direction: row; height: 100%; overflow-y: auto; }
+        .modal-visual-container { flex: 1.2; background: radial-gradient(circle at center, rgba(0, 242, 255, 0.05) 0%, transparent 100%); padding: 3rem; display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--glass-border); min-height: 400px; overflow: hidden; position: relative; }
+        .modal-text-container { flex: 1; padding: 4rem 3rem; display: flex; flex-direction: column; justify-content: center; background: rgba(0, 0, 0, 0.2); }
+        .modal-text-container h2 { font-size: 2rem; color: white; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 12px; }
+        .modal-text-container h2 i { color: var(--primary); text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
+        .modal-desc { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2.5rem; line-height: 1.7; }
+        .modal-benefit { background: rgba(0, 242, 255, 0.05); border-left: 4px solid var(--primary); padding: 1.5rem; border-radius: 0 1rem 1rem 0; }
+        .modal-benefit h4 { color: white; margin-bottom: 0.8rem; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .modal-benefit h4 i { color: var(--accent); }
+        .modal-benefit p { color: var(--text-muted); font-size: 1rem; margin: 0; }
+
+        /* ANIMAÇÕES CONCEITUAIS DO MODAL (NEON) */
+        .visual-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; position: relative; }
+        
+        .v-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); padding: 1.2rem 2.5rem; border-radius: 12px; color: white; font-weight: bold; border: 1px solid var(--glass-border); animation: float 4s ease-in-out infinite; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 2; font-family: 'Space Grotesk', sans-serif;}
+        .v-card.small { font-size: 0.9rem; padding: 0.8rem 1.5rem; animation-delay: 1.5s; background: rgba(0, 242, 255, 0.1); border-color: rgba(0, 242, 255, 0.3); color: var(--primary);}
+        .v-circle-chart { width: 150px; height: 150px; border-radius: 50%; background: conic-gradient(var(--primary) 0% 65%, var(--accent) 65% 100%); margin-bottom: -40px; border: 8px solid var(--bg-body); animation: pulse 3s infinite; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);}
+
+        .v-receipt { background: rgba(255, 255, 255, 0.9); width: 140px; height: 190px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem; gap: 12px; position: relative; animation: slideUp 3s ease-out infinite alternate; box-shadow: 0 15px 30px rgba(0, 242, 255, 0.2); }
+        .v-receipt i { color: var(--accent); font-size: 3rem; margin-bottom: 10px; }
+        .v-line { width: 100%; height: 6px; background: #cbd5e1; border-radius: 3px; }
+        .v-line.short { width: 60%; }
+        .v-whatsapp-badge { position: absolute; bottom: -20px; right: -30px; background: #25D366; color: white; padding: 10px 20px; border-radius: 30px; font-weight: bold; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.4); animation: popIn 3s infinite alternate; font-size: 1rem; border: 2px solid white;}
+
+        .v-checkout { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.5rem; width: 90%; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 20px 40px rgba(0, 242, 255, 0.1); }
+        .v-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; color: white; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); font-family: 'Space Grotesk', sans-serif;}
+        .v-item i { color: var(--primary); }
+        .v-btn { background: linear-gradient(90deg, var(--accent), var(--primary)); color: white; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; margin-top: 10px; animation: pulseBtn 2s infinite; text-transform: uppercase; font-size: 0.95rem; letter-spacing: 1px; font-family: 'Space Grotesk', sans-serif;}
+
+        .v-balance { display: flex; flex-direction: column; gap: 15px; width: 90%; }
+        .v-balance > div { padding: 1.2rem 1.5rem; border-radius: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3); font-family: 'Space Grotesk', sans-serif;}
+        .v-balance .v-green { background: rgba(0, 242, 255, 0.1); color: var(--primary); border: 1px solid rgba(0, 242, 255, 0.3); animation: floatRight 4s infinite alternate; text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);}
+        .v-balance .v-red { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); animation: floatLeft 4s infinite alternate;}
+        .v-balance .v-total { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.5)); backdrop-filter: blur(5px); border: 1px solid var(--glass-border); color: white; justify-content: center; font-size: 1.4rem; margin-top: 15px; border-left: 4px solid var(--primary); animation: pulse 3s infinite;}
+
+        .v-radar-icon { font-size: 5.5rem; color: var(--primary); opacity: 0.9; animation: spin 4s linear infinite; margin-bottom: 2rem; filter: drop-shadow(0 0 25px rgba(0, 242, 255, 0.6));}
+        .v-client { padding: 15px 25px; border-radius: 30px; font-weight: bold; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); position: relative; font-family: 'Space Grotesk', sans-serif;}
+        .v-client.v-green { background: rgba(0, 242, 255, 0.15); color: var(--primary); border: 1px solid rgba(0, 242, 255, 0.4); transform: translateX(-40px); animation: float 3s ease-in-out infinite;}
+        .v-client.v-red { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.4); transform: translateX(40px); animation: float 3s ease-in-out infinite; animation-delay: 1.5s; }
+
+        .exp-visual { flex-direction: row; flex-wrap: wrap; gap: 2.5rem;}
+        .v-file { width: 120px; height: 150px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; gap: 15px; font-size: 1.4rem; color: white; animation: float 3s ease-in-out infinite; font-family: 'Space Grotesk', sans-serif;}
+        .v-file i { font-size: 3rem; }
+        .v-file.pdf { background: linear-gradient(135deg, #ef4444, #991b1b); box-shadow: 0 15px 30px rgba(239, 68, 68, 0.4); border: 1px solid rgba(255,255,255,0.2);}
+        .v-file.csv { background: linear-gradient(135deg, var(--success), #047857); box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4); animation-delay: 1.5s; border: 1px solid rgba(255,255,255,0.2);}
+        .v-cloud { width: 100%; text-align: center; font-size: 4rem; color: rgba(255,255,255,0.1); margin-top: 1rem; animation: pulseBtn 3s infinite; }
+
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+        @keyframes floatRight { 0% { transform: translateX(0px); } 100% { transform: translateX(15px); } }
+        @keyframes floatLeft { 0% { transform: translateX(0px); } 100% { transform: translateX(-15px); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(0, 242, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes slideUp { 0% { transform: translateY(30px); opacity: 0.8; } 100% { transform: translateY(-10px); opacity: 1; } }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        /* PRICING SECTION GLASSMORPHISM */
+        .pricing { padding: 5rem 5% 10rem; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10;}
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; margin-top: 4rem; }
+        .price-card { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 3rem 2.5rem; border-radius: 1.5rem; border: 1px solid var(--glass-border); display: flex; flex-direction: column; position: relative; transition: var(--transition); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+        .price-card:hover { transform: translateY(-10px); background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.2); }
+        
+        .price-card.popular { border-color: var(--primary); box-shadow: 0 15px 40px rgba(0, 242, 255, 0.15); transform: scale(1.05); z-index: 2; background: rgba(0, 242, 255, 0.03); }
+        .price-card.popular:hover { transform: scale(1.05) translateY(-10px); border-color: var(--primary); }
+        .popular-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, var(--accent), var(--primary)); color: white; padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; width: max-content; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 5px 15px rgba(112, 0, 255, 0.4);}
+        
+        .plan-name { font-size: 1.5rem; color: white; font-weight: bold; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px; }
+        .price-anchor { display: block; font-size: 1.1rem; color: rgba(255, 255, 255, 0.4); text-decoration: line-through; margin-bottom: -5px; font-weight: 500; font-family: 'Space Grotesk', sans-serif;}
+        .price-anchor-highlight { color: var(--danger); opacity: 0.8; }
+        .plan-price { font-size: 3.5rem; color: var(--primary); font-weight: bold; margin-bottom: 0.5rem; display: flex; align-items: baseline; gap: 5px; text-shadow: 0 0 20px rgba(0, 242, 255, 0.3); }
+        .price-card.premium .plan-price { color: var(--premium); text-shadow: 0 0 20px rgba(168, 85, 247, 0.3); }
+        .plan-price span { font-size: 1.2rem; color: var(--text-muted); font-weight: normal; text-shadow: none; }
+        .plan-desc { color: var(--text-muted); margin-bottom: 2.5rem; font-size: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1.5rem;}
+        
+        .features-list { list-style: none; margin-bottom: 3rem; flex: 1; }
+        .features-list li { margin-bottom: 1.2rem; display: flex; align-items: center; gap: 12px; color: var(--text-main); font-size: 1rem; }
+        .features-list li i { color: var(--primary); font-size: 1.1rem; }
+        .price-card.premium .features-list li i.fa-check { color: var(--premium); }
+        .features-list li.disabled { color: var(--text-muted); opacity: 0.4; }
+        .features-list li.disabled i { color: var(--text-muted); }
+        
+        .price-btn { width: 100%; text-align: center; padding: 1.2rem; border-radius: 0.8rem; font-weight: bold; text-decoration: none; transition: var(--transition); display: inline-flex; justify-content: center; align-items: center; gap: 10px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; letter-spacing: 1px; font-size: 0.95rem;}
+        .btn-outline-price { border: 1px solid var(--primary); color: var(--primary); background: rgba(0, 242, 255, 0.05); }
+        .btn-outline-price:hover { background: var(--primary); color: #000; box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);}
+        .btn-premium-price { background: linear-gradient(135deg, var(--premium), #7e22ce); color: white; border: none; box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3); }
+        .btn-premium-price:hover { opacity: 0.9; box-shadow: 0 8px 25px rgba(168, 85, 247, 0.5); transform: translateY(-2px); }
+
+        /* FOOTER */
+        footer { background: rgba(0,0,0,0.4); padding: 4rem 5%; text-align: center; border-top: 1px solid var(--glass-border); backdrop-filter: blur(10px); }
+        .footer-text { color: var(--text-muted); font-size: 1rem; }
+
+        /* MOBILE RESPONSIVO */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero { padding-top: 8rem; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero-buttons { flex-direction: column; }
+            .price-card.popular { transform: none; }
+            .price-card.popular:hover { transform: translateY(-5px); }
+            
+            .modal-body { flex-direction: column; }
+            .modal-visual-container { border-right: none; border-bottom: 1px solid var(--glass-border); min-height: 280px; padding: 2rem;}
+            .modal-text-container { padding: 2rem; }
+            .modal-text-container h2 { font-size: 1.6rem; }
+        }
     </style>
 </head>
 <body>
 
+    <!-- LUZES DE FUNDO FUTURISTAS -->
     <div class="glow glow-1"></div>
     <div class="glow glow-2"></div>
+    <div class="glow glow-3"></div>
 
-    <nav>
-        <a href="#" class="logo"><i class="fa-solid fa-arrow-trend-up" style="color: var(--primary);"></i> LUCRYO</a>
-        <!-- Este link vai enviar o cliente direto para o seu App -->
-        <a href="app.html" class="login-btn">Entrar no App</a>
-    </nav>
-
-    <header class="hero">
-        <h1>Acelere as suas vendas com a <br><span class="highlight">Gestão do Futuro</span></h1>
-        <p>Abandone as planilhas confusas. Controle pagamentos, acompanhe métricas e fature mais com a plataforma mais avançada do mercado.</p>
-        <!-- Este link vai enviar o cliente para pagar na Kiwify -->
-        <a href="https://pay.kiwify.com.br/3BdzfK1" class="cta-btn">Começar Agora</a>
+    <header>
+        <a href="#" class="logo-lucryo"><i class="fa-solid fa-arrow-trend-up"></i> LUCRY<span>O</span></a>
+        <nav class="nav-links">
+            <a href="#recursos">Recursos</a>
+            <a href="#planos">Planos</a>
+        </nav>
+        <div style="display: flex; gap: 1rem;">
+            <a href="https://wa.me/5533984187802?text=Ol%C3%A1!%20J%C3%A1%20sou%20cliente%20LUCRYO%20e%20preciso%20de%20ajuda%20com%20meu%20acesso." target="_blank" class="btn-login">Entrar</a>
+            <a href="#planos" class="btn-cta">Testar Grátis</a>
+        </div>
     </header>
 
-    <section class="features">
-        <div class="feature-card">
-            <i class="fas fa-bolt feature-icon"></i>
-            <h3>Automático</h3>
-            <p>Integração total e liberação de acessos em segundos. Foque em vender, nós cuidamos da tecnologia.</p>
-        </div>
-        <div class="feature-card">
-            <i class="fas fa-chart-pie feature-icon"></i>
-            <h3>Dashboard VIP</h3>
-            <p>Tenha controlo total do seu faturamento com métricas claras e um design focado na experiência.</p>
-        </div>
-        <div class="feature-card">
-            <i class="fas fa-shield-alt feature-icon"></i>
-            <h3>Segurança Cloud</h3>
-            <p>Os seus dados protegidos com a mesma tecnologia de base de dados utilizada pelas maiores empresas de tecnologia do mundo.</p>
+    <section class="hero">
+        <div class="badge">🚀 O Novo Padrão de Gestão SaaS</div>
+        <h1>Chega de Caderninho.<br><span>Profissionalize suas Vendas.</span></h1>
+        <p>A LUCRYO é o sistema completo e fácil para organizar seus pedidos, mapear seus clientes e enviar recibos profissionais em PDF direto no WhatsApp em segundos.</p>
+        <div class="hero-buttons">
+            <a href="https://wa.me/5533984187802?text=Ol%C3%A1!%20Vi%20o%20site%20da%20LUCRYO%20e%20quero%20liberar%20meu%20teste%20de%207%20dias%20gr%C3%A1tis!" target="_blank" class="btn-cta btn-large"><i class="fa-brands fa-whatsapp"></i> Começar meu Teste Grátis</a>
         </div>
     </section>
+
+    <section id="recursos" class="features">
+        <h2 class="section-title">Explore o interior do sistema</h2>
+        <p class="section-subtitle">Clique nos cartões abaixo para entender como cada ferramenta trabalha por você.</p>
+        
+        <div class="features-grid">
+            
+            <div class="feature-card" onclick="openModal('cfo')">
+                <div class="feature-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                <h3>Painel Inteligente (CFO)</h3>
+                <p>Veja seu faturamento, lucro e produtos mais vendidos em tempo real, sem precisar calcular nada.</p>
+            </div>
+
+            <div class="feature-card" onclick="openModal('recibos')">
+                <div class="feature-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                <h3>Recibos no WhatsApp</h3>
+                <p>Gere cupons fiscais/recibos em PDF e envie direto no WhatsApp do cliente com um único clique.</p>
+            </div>
+
+            <div class="feature-card" onclick="openModal('pdv')">
+                <div class="feature-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                <h3>Gestão Rápida de Pedidos</h3>
+                <p>Lance novas vendas em 3 cliques. Selecione o cliente, adicione os produtos e o sistema faz o resto.</p>
+            </div>
+
+            <div class="feature-card" onclick="openModal('custos')">
+                <div class="feature-icon"><i class="fa-solid fa-box-open"></i></div>
+                <h3>Controle de Custos</h3>
+                <p>A LUCRYO sabe o que é dinheiro no seu bolso e o que é custo de mercadoria para te dar o lucro real.</p>
+            </div>
+
+            <div class="feature-card" onclick="openModal('radar')">
+                <div class="feature-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+                <h3>Radar de Vendas (CRM)</h3>
+                <p>Nossa IA avisa quais clientes estão sumidos há dias, permitindo que você os chame no WhatsApp na hora certa.</p>
+            </div>
+
+            <div class="feature-card" onclick="openModal('exportacao')">
+                <div class="feature-icon"><i class="fa-solid fa-file-excel"></i></div>
+                <h3>Exportação Total</h3>
+                <p>Você é dono dos seus dados. Baixe todo o histórico financeiro em PDF ou exporte suas listas para o Excel.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <div id="featureModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="forceCloseModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-body">
+                
+                <div class="modal-visual-container" id="modalVisual"></div>
+                
+                <div class="modal-text-container">
+                    <h2 id="modalTitle"><i class="fa-solid fa-check"></i> Titulo</h2>
+                    <p id="modalDesc" class="modal-desc">Descrição detalhada vai aqui.</p>
+                    <div class="modal-benefit">
+                        <h4><i class="fa-solid fa-bolt"></i> Como isso te ajuda na prática:</h4>
+                        <p id="modalBenefit">Benefício explicado aqui.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section id="planos" class="pricing">
+        <h2 class="section-title">Escolha o plano ideal para você</h2>
+        <div class="pricing-grid">
+            
+            <!-- PLANO BÁSICO -->
+            <div class="price-card">
+                <div class="plan-name">Básico</div>
+                <span class="price-anchor">De R$ 39,90 por</span>
+                <div class="plan-price">R$ 9<span>,90/mês</span></div>
+                <p class="plan-desc">Essencial para abandonar o papel e caneta.</p>
+                <ul class="features-list">
+                    <li><i class="fa-solid fa-check"></i> Gestão de Clientes e Produtos</li>
+                    <li><i class="fa-solid fa-check"></i> Registro de Pedidos ilimitado</li>
+                    <li><i class="fa-solid fa-check"></i> Dashboard Financeiro e Metas</li>
+                    <li><i class="fa-solid fa-check"></i> Envio de Recibos Simples</li>
+                    <li class="disabled"><i class="fa-solid fa-xmark"></i> Exportação para Excel e PDF</li>
+                    <li class="disabled"><i class="fa-solid fa-xmark"></i> Radar Inteligente de Clientes</li>
+                </ul>
+                <a href="https://pay.kiwify.com.br/vj0jsRv" class="price-btn btn-outline-price">Assinar Plano Básico</a>
+            </div>
+
+            <!-- PLANO PRO (POPULAR) -->
+            <div class="price-card popular">
+                <div class="popular-badge">LOTE FUNDADOR</div>
+                <div class="plan-name" style="color: var(--primary);">Pro</div>
+                <span class="price-anchor">De R$ 69,90 por</span>
+                <div class="plan-price">R$ 19<span>,90/mês</span></div>
+                <p class="plan-desc">Para quem precisa de controle total e relatórios.</p>
+                <ul class="features-list">
+                    <li><i class="fa-solid fa-check"></i> <strong>Tudo do plano Básico, mais:</strong></li>
+                    <li><i class="fa-solid fa-check"></i> Recibos Premium no WhatsApp</li>
+                    <li><i class="fa-solid fa-check"></i> Relatórios Financeiros Avançados</li>
+                    <li><i class="fa-solid fa-check"></i> Exportação Completa (Excel e PDF)</li>
+                    <li><i class="fa-solid fa-check"></i> Backup Garantido na Nuvem</li>
+                    <li class="disabled"><i class="fa-solid fa-xmark"></i> Radar Inteligente de Clientes</li>
+                </ul>
+                <a href="https://pay.kiwify.com.br/3BdzfK1" class="price-btn btn-cta">Assinar Plano Pro</a>
+            </div>
+
+            <!-- PLANO PREMIUM -->
+            <div class="price-card premium" style="border-color: rgba(168, 85, 247, 0.3);">
+                <div class="plan-name" style="color: var(--premium);">Premium</div>
+                <span class="price-anchor"><span class="price-anchor-highlight">De R$ 99,90</span> por</span>
+                <div class="plan-price">R$ 24<span>,90/mês</span></div>
+                <p class="plan-desc">A máquina de vendas para escalar seu faturamento.</p>
+                <ul class="features-list">
+                    <li><i class="fa-solid fa-check"></i> <strong>Tudo do plano Pro, mais:</strong></li>
+                    <li><i class="fa-solid fa-check"></i> Radar Inteligente de Vendas</li>
+                    <li><i class="fa-solid fa-check"></i> Alertas de Oportunidades</li>
+                    <li><i class="fa-solid fa-check"></i> Integração Direta com WhatsApp</li>
+                    <li><i class="fa-solid fa-check"></i> Suporte Prioritário VIP</li>
+                </ul>
+                <a href="https://pay.kiwify.com.br/KMbDYd4" class="price-btn btn-premium-price"><i class="fa-solid fa-bolt"></i> Assinar Premium</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo-lucryo footer-logo"><i class="fa-solid fa-arrow-trend-up"></i> LUCRY<span>O</span></div>
+        <p class="footer-text">© 2026 LUCRYO Sistemas. O Futuro da Gestão Cloud.</p>
+    </footer>
+
+    <script>
+        const featureData = {
+            'cfo': {
+                title: '<i class="fa-solid fa-lightbulb"></i> Painel Inteligente (CFO)',
+                visual: `
+                    <div class="visual-wrapper">
+                        <div class="v-card"><i class="fa-solid fa-chart-simple" style="color: var(--primary);"></i> Faturamento Mensal</div>
+                        <div class="v-card small"><i class="fa-solid fa-trophy"></i> Produto Campeão</div>
+                        <div class="v-circle-chart"></div>
+                    </div>
+                `,
+                desc: 'Assim que você entra na LUCRYO, você é recebido com uma visão geral do seu negócio. Acompanhe a sua barra de metas encher e analise gráficos dinâmicos.',
+                benefit: 'O sistema vasculha todos os pedidos e te diz instantaneamente qual o seu Ticket Médio, qual produto dá mais lucro e quem é o seu "Cliente Ouro".'
+            },
+            'recibos': {
+                title: '<i class="fa-brands fa-whatsapp"></i> Recibos no WhatsApp',
+                visual: `
+                    <div class="visual-wrapper">
+                        <div class="v-receipt">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                            <div class="v-line"></div>
+                            <div class="v-line"></div>
+                            <div class="v-line short"></div>
+                            <div class="v-whatsapp-badge"><i class="fa-brands fa-whatsapp"></i> Enviado!</div>
+                        </div>
+                    </div>
+                `,
+                desc: 'Com um layout claro e profissional, o sistema gera o detalhamento completo de cada pedido em formato PDF.',
+                benefit: 'Gera confiança absurda. Seu cliente recebe o link seguro contendo o comprovante da compra direto no WhatsApp. Adeus blocos de papel.'
+            },
+            'pdv': {
+                title: '<i class="fa-solid fa-cart-shopping"></i> Gestão de Pedidos',
+                visual: `
+                    <div class="visual-wrapper">
+                        <div class="v-checkout">
+                            <div class="v-item"><i class="fa-solid fa-box"></i> Produto A <span>R$ 50</span></div>
+                            <div class="v-item"><i class="fa-solid fa-box"></i> Produto B <span>R$ 30</span></div>
+                            <div class="v-btn">Registrar Venda <i class="fa-solid fa-check"></i></div>
+                        </div>
+                    </div>
+                `,
+                desc: 'Uma interface limpa e focada em conversão para você registrar cada venda que entra no seu balcão ou delivery.',
+                benefit: 'Você puxa o cliente, adiciona múltiplos produtos, e com um clique a venda é salva, o lucro calculado e o histórico atualizado.'
+            },
+            'custos': {
+                title: '<i class="fa-solid fa-box-open"></i> Controle de Custos',
+                visual: `
+                    <div class="visual-wrapper">
+                        <div class="v-balance">
+                            <div class="v-green"><i class="fa-solid fa-arrow-trend-up"></i> Faturamento</div>
+                            <div class="v-red"><i class="fa-solid fa-arrow-trend-down"></i> Custos Reais</div>
+                            <div class="v-total">Lucro Líquido <i class="fa-solid fa-sack-dollar"></i></div>
+                        </div>
+                    </div>
+                `,
+                desc: 'O módulo financeiro separa exatamente o dinheiro que entrou (Faturamento Bruto) do que você gastou para produzir ou revender (Custo).',
+                benefit: 'Fim do achismo. O sistema calcula a diferença e te mostra o seu Lucro Líquido Real. É a saúde do seu negócio na palma da mão.'
+            },
+            'radar': {
+                title: '<i class="fa-solid fa-satellite-dish"></i> Radar Inteligente',
+                visual: `
+                    <div class="visual-wrapper">
+                        <i class="fa-solid fa-satellite-dish v-radar-icon"></i>
+                        <div class="v-client v-green"><i class="fa-solid fa-circle-check"></i> Cliente Ativo</div>
+                        <div class="v-client v-red"><i class="fa-solid fa-triangle-exclamation"></i> Cliente Sumido</div>
+                    </div>
+                `,
+                desc: 'Nossa inteligência artificial organiza a sua base de clientes com base na recência da última compra.',
+                benefit: 'Identifique clientes com o status "Ativo" e recupere vendas de clientes que sumiram. É um CRM de altíssima conversão.'
+            },
+            'exportacao': {
+                title: '<i class="fa-solid fa-file-excel"></i> Exportação Total',
+                visual: `
+                    <div class="visual-wrapper">
+                        <div class="v-cloud"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+                        <div class="exp-visual" style="display:flex;">
+                            <div class="v-file pdf"><i class="fa-solid fa-file-pdf"></i> PDF</div>
+                            <div class="v-file csv"><i class="fa-solid fa-file-csv"></i> CSV</div>
+                        </div>
+                    </div>
+                `,
+                desc: 'Uma central dedicada exclusivamente à documentação e contabilidade da sua pequena empresa.',
+                benefit: 'Você é dono dos seus dados. Baixe relatórios financeiros em PDF para o seu contador ou jogue todos os seus dados no Excel.'
+            }
+        };
+
+        const modalOverlay = document.getElementById('featureModal');
+        const modalVisual = document.getElementById('modalVisual');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+        const modalBenefit = document.getElementById('modalBenefit');
+
+        function openModal(featureId) {
+            const data = featureData[featureId];
+            if(!data) return;
+
+            modalTitle.innerHTML = data.title;
+            modalVisual.innerHTML = data.visual;
+            modalDesc.innerText = data.desc;
+            modalBenefit.innerText = data.benefit;
+
+            modalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal(event) {
+            if (event.target === modalOverlay) {
+                forceCloseModal();
+            }
+        }
+
+        function forceCloseModal() {
+            modalOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto'; 
+        }
+    </script>
 
 </body>
 </html>
