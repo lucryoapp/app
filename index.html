@@ -220,14 +220,19 @@
                 return;
             }
             
-            // 2. Salva o email na tabela 'perfis' como Básico
+            // 2. Salva o id, email e plano na tabela 'perfis'
             if (data.user) {
                 const { error: insertError } = await db.from('perfis').insert([
-                    { email: email, plano: 'basico' }
+                    { 
+                        id: data.user.id,
+                        email: email, 
+                        plano: 'basico' 
+                    }
                 ]);
                 
                 if(insertError) {
                     console.error("Erro ao salvar o perfil:", insertError);
+                    alert("Aviso: A conta foi criada, mas houve um erro ao guardar o perfil inicial.");
                 }
             }
 
