@@ -53,9 +53,10 @@
     <script>
         const SUPABASE_URL = 'https://iazehdwsnmunglhdtize.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_rPoTbDXSDr-zHPsgbEqY9Q_vDJklNAG';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // CORREÇÃO AQUI: Mudamos o nome da variável para 'db' para não dar conflito
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Função para Criar Conta
         async function cadastrar() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -65,7 +66,7 @@
                 return;
             }
 
-            const { data, error } = await supabase.auth.signUp({ email, password });
+            const { data, error } = await db.auth.signUp({ email, password });
 
             if (error) {
                 alert("Erro ao criar conta: " + error.message);
@@ -75,12 +76,11 @@
             }
         }
 
-        // Função para Entrar
         async function login() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            const { data, error } = await db.auth.signInWithPassword({ email, password });
 
             if (error) {
                 alert("Erro: E-mail ou senha incorretos.");
@@ -89,11 +89,10 @@
             }
         }
 
-        // Checar o Plano
         async function checkUserPlan(user) {
             if(!user) return;
 
-            const { data: perfil, error } = await supabase
+            const { data: perfil, error } = await db
                 .from('perfis')
                 .select('plano')
                 .eq('email', user.email)
@@ -115,7 +114,7 @@
         }
 
         async function logout() {
-            await supabase.auth.signOut();
+            await db.auth.signOut();
             window.location.reload();
         }
     </script>
