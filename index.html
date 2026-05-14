@@ -181,7 +181,7 @@
         <div id="content-premium" class="hidden">
             <h3 style="color: var(--primary);">ACESSO VIP LIBERADO</h3>
             <p style="font-size: 0.9rem; margin: 15px 0;">Todas as ferramentas futuristas estão ativas.</p>
-            <button class="btn-primary"><i class="fas fa-chart-line"></i> Analisar Vendas</button>
+            <button class="btn-primary" onclick="window.location.href='app.html'"><i class="fas fa-chart-line"></i> Abrir Gestão de Pedidos</button>
             <button class="btn-outline" style="border-color: var(--accent); color: var(--accent);"><i class="fas fa-robot"></i> Automação IA</button>
         </div>
 
@@ -212,12 +212,27 @@
             const password = document.getElementById('password').value;
             if(!email || !password) return alert("Preencha os campos!");
 
+            // 1. Cria a conta no Auth do Supabase
             const { data, error } = await db.auth.signUp({ email, password });
-            if (error) alert("Erro: " + error.message);
-            else {
-                alert("Conta criada! Redirecionando...");
-                checkUserPlan(data.user);
+            
+            if (error) {
+                alert("Erro: " + error.message);
+                return;
             }
+            
+            // 2. Salva o email na tabela 'perfis' como Básico
+            if (data.user) {
+                const { error: insertError } = await db.from('perfis').insert([
+                    { email: email, plano: 'basico' }
+                ]);
+                
+                if(insertError) {
+                    console.error("Erro ao salvar o perfil:", insertError);
+                }
+            }
+
+            alert("Conta criada! Redirecionando...");
+            checkUserPlan(data.user);
         }
 
         async function login() {
@@ -239,7 +254,7 @@
             const badge = document.getElementById('plan-badge');
             const plano = perfil?.plano || 'basico';
             badge.innerText = plano.toUpperCase();
-            badge.className = 'badge ' + (plano === 'premium' ? 'badge-premium' : 'badge-basico');
+            badge.className = 'badge ' + (plano === 'premium' || plano === 'pro' ? 'badge-premium' : 'badge-basico');
 
             if (plano === 'premium' || plano === 'pro') {
                 document.getElementById('content-premium').classList.remove('hidden');
