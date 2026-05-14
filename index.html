@@ -206,7 +206,7 @@
             }
         }
 
-        // --- Lógica de Auth ---
+        // --- Lógica de Auth (Modo Detetive) ---
         async function cadastrar() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -216,11 +216,11 @@
             const { data, error } = await db.auth.signUp({ email, password });
             
             if (error) {
-                alert("Erro: " + error.message);
+                alert("Erro ao criar conta: " + error.message);
                 return;
             }
             
-            // 2. Salva o id, email e plano na tabela 'perfis'
+            // 2. Tenta inserir na tabela perfis e Grita se houver erro!
             if (data.user) {
                 const { error: insertError } = await db.from('perfis').insert([
                     { 
@@ -231,12 +231,13 @@
                 ]);
                 
                 if(insertError) {
-                    console.error("Erro ao salvar o perfil:", insertError);
-                    alert("Aviso: A conta foi criada, mas houve um erro ao guardar o perfil inicial.");
+                    // Este é o alerta que nos vai dizer a verdade nua e crua!
+                    alert("ERRO SECRETO DO SUPABASE: " + insertError.message + " | Detalhes: " + insertError.details);
+                } else {
+                    alert("SUCESSO ABSOLUTO: O email foi guardado na tabela!");
                 }
             }
 
-            alert("Conta criada! Redirecionando...");
             checkUserPlan(data.user);
         }
 
