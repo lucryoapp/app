@@ -3,187 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUCRYO - Gestão de Vendas Premium</title>
+    <title>LUCRYO - Painel de Gestão</title>
+    <!-- Bibliotecas Necessárias -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Urbanist:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
         :root {
-            --primary: #22c55e;
-            --primary-dark: #16a34a;
-            --bg-dark: #0f1b2d;
-            --bg-card: #1e2a3a;
-            --text-main: #e5e7eb;
-            --text-muted: #9ca3af;
-            --danger: #f87171;
+            /* MODO ESCURO (Padrão) */
+            --bg-body: #020617;
+            --bg-sidebar: rgba(15, 23, 42, 0.8);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #00f2ff;
+            --primary-dark: #00b8cc;
+            --accent: #7000ff;
+            --danger: #ef4444;
             --warning: #facc15;
             --premium: #a855f7;
+            --input-bg: rgba(0, 0, 0, 0.2);
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
             --transition: all 0.3s ease;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
-        .hidden { display: none !important; }
-        .flex { display: flex; }
-        .justify-between { justify-content: space-between; }
-        .items-center { align-items: center; }
-        
-        .auth-container { max-width: 400px; margin: 80px auto; padding: 2rem; background: var(--bg-card); border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.05); }
-        
-        /* A NOVA LOGO FEITA EM CÓDIGO PURO (NUNCA QUEBRA!) */
-        .logo-lucryo { font-size: 2.2rem; font-weight: 800; color: #ffffff; text-align: center; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: 1px; white-space: nowrap; }
-        .logo-lucryo i { color: var(--primary); font-size: 1.8rem; text-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
-        .logo-lucryo span { color: var(--primary); text-shadow: 0 0 20px rgba(34, 197, 94, 0.6); }
-        
-        /* Ajustes da Logo para diferentes lugares */
-        .logo-sidebar { font-size: 1.8rem; margin-bottom: 1rem; padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logo-sidebar i { font-size: 1.5rem; }
-        .logo-mobile { font-size: 1.3rem; margin-bottom: 0; padding: 0; border: none; display: none; white-space: nowrap;}
-        .logo-mobile i { font-size: 1.1rem; }
 
+        body.light-mode {
+            /* MODO CLARO */
+            --bg-body: #f0f4f8;
+            --bg-sidebar: rgba(255, 255, 255, 0.9);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #1e293b;
+            --text-muted: #475569;
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --accent: #6366f1;
+            --input-bg: #ffffff;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Urbanist', sans-serif; background-color: var(--bg-body); color: var(--text-main); height: 100vh; overflow: hidden; transition: var(--transition); }
+        .hidden { display: none !important; }
+        
+        /* Efeitos Neon ao fundo */
+        .glow { position: fixed; width: 500px; height: 500px; filter: blur(150px); z-index: 0; opacity: 0.3; border-radius: 50%; pointer-events: none; }
+        .glow-1 { top: -100px; left: -100px; background: var(--primary); }
+        .glow-2 { bottom: -100px; right: -100px; background: var(--accent); }
+
+        /* Estilos Base e Formulários */
         .form-group { margin-bottom: 1.5rem; }
         label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
-        input, select { width: 100%; padding: 0.8rem; border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; font-size: 1rem; }
-        .btn { width: 100%; padding: 0.8rem; border-radius: 0.5rem; border: none; cursor: pointer; font-weight: 600; transition: var(--transition); font-size: 1rem; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); margin-top: 1rem; }
+        input, select { width: 100%; padding: 0.8rem; border-radius: 0.8rem; border: 1px solid var(--glass-border); background: var(--input-bg); color: var(--text-main); font-size: 1rem; transition: var(--transition); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 242, 255, 0.1); }
+        
+        .btn { width: 100%; padding: 0.8rem; border-radius: 0.8rem; border: none; cursor: pointer; font-weight: 700; transition: var(--transition); font-size: 1rem; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-primary { background: linear-gradient(90deg, var(--accent), var(--primary)); color: white; box-shadow: 0 4px 15px rgba(112, 0, 255, 0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(112, 0, 255, 0.5); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: var(--primary); color: #000; }
         .btn-danger { background: var(--danger); color: white; }
-        .btn-premium { background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; border: none;}
+        .btn-premium { background: linear-gradient(135deg, var(--premium), #7e22ce); color: white; border: none;}
         .btn-premium:hover { opacity: 0.9; transform: scale(1.02); }
 
-        .app-layout { display: flex; height: 100vh; overflow: hidden; }
-
-        .sidebar { width: 260px; background: var(--bg-card); border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; transition: var(--transition); z-index: 100; }
+        /* TELA DE LOGIN (Glassmorphism) */
+        .auth-wrapper { display: flex; justify-content: center; align-items: center; height: 100vh; position: relative; z-index: 10; }
+        .auth-container { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: var(--shadow); width: 100%; max-width: 400px; padding: 2.5rem; text-align: center; }
         
+        /* LOGO CÓDIGO PURO */
+        .logo-lucryo { font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--text-main); text-align: center; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: 1px; white-space: nowrap; }
+        .logo-lucryo i { color: var(--primary); font-size: 1.8rem; text-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }
+        .logo-lucryo span { color: var(--primary); text-shadow: 0 0 20px rgba(0, 242, 255, 0.6); }
+        
+        .logo-sidebar { font-size: 1.8rem; margin-bottom: 1rem; padding: 1.5rem; border-bottom: 1px solid var(--glass-border); }
+        .logo-mobile { font-size: 1.3rem; margin-bottom: 0; padding: 0; border: none; display: none; white-space: nowrap; }
+
+        /* ESTRUTURA DO APP (Painel) */
+        .app-layout { display: flex; height: 100vh; overflow: hidden; position: relative; z-index: 10; }
+        
+        .sidebar { width: 260px; background: var(--bg-sidebar); backdrop-filter: blur(10px); border-right: 1px solid var(--glass-border); display: flex; flex-direction: column; transition: var(--transition); z-index: 100; }
         .sidebar .nav-item { display: flex; align-items: center; padding: 1rem 1.5rem; color: var(--text-muted); text-decoration: none; cursor: pointer; transition: var(--transition); border-left: 4px solid transparent; font-weight: 500; position: relative; }
         .sidebar .nav-item i.menu-icon { font-size: 1.2rem; width: 35px; margin-bottom: 0; text-align: center; }
-        .sidebar .nav-item:hover { color: var(--text-main); background: rgba(255,255,255,0.02); }
-        .sidebar .nav-item.active { background: rgba(34, 197, 94, 0.1); color: var(--primary); border-left-color: var(--primary); }
-        .sidebar .nav-item.active i.menu-icon { color: var(--primary); }
-        .premium-lock-icon { position: absolute; right: 15px; font-size: 0.8rem !important; color: var(--premium) !important; width: auto !important; }
+        .sidebar .nav-item:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+        .sidebar .nav-item.active { background: rgba(0, 242, 255, 0.1); color: var(--primary); border-left-color: var(--primary); }
+        .sidebar .nav-item.active i.menu-icon { color: var(--primary); text-shadow: 0 0 10px rgba(0,242,255,0.5);}
+        .premium-lock-icon { position: absolute; right: 15px; font-size: 0.8rem !important; color: var(--premium) !important; }
 
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; background-color: var(--bg-dark); }
-        .main-wrapper header { background: var(--bg-card); padding: 1rem 1.5rem; display: flex; justify-content: flex-end; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .main-wrapper header { background: var(--glass-bg); backdrop-filter: blur(10px); padding: 1rem 1.5rem; display: flex; justify-content: flex-end; align-items: center; border-bottom: 1px solid var(--glass-border); }
+        .main-wrapper main { flex: 1; overflow-y: auto; padding: 2rem; max-width: 1000px; margin: 0 auto; width: 100%; }
+
+        /* BOTÃO DE TEMA */
+        .theme-toggle { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; margin-right: 15px;}
+        .theme-toggle:hover { background: var(--primary); color: #000; }
+
+        /* COMPONENTES DO PAINEL */
+        .card { background: var(--glass-bg); backdrop-filter: blur(12px); padding: 1.5rem; border-radius: 1.2rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--glass-border); transition: all 0.5s ease; }
+        .card-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; margin-bottom: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 10px; font-weight: 700;}
+        .card-title i { color: var(--primary); }
         
-        .main-wrapper main { flex: 1; overflow-y: auto; padding: 2rem; max-width: 900px; margin: 0 auto; width: 100%; }
-
         .insights-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+        .finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .finance-card { background: rgba(0,0,0,0.1); padding: 1rem; border-radius: 1rem; text-align: center; border: 1px solid var(--glass-border); }
+        body.light-mode .finance-card { background: rgba(255,255,255,0.5); }
+        .finance-card .val { font-size: 1.4rem; font-weight: bold; display: block; margin-top: 5px; color: var(--text-main); }
+        .finance-card .label { font-size: 0.8rem; color: var(--text-muted); }
 
+        .progress-bg { background: rgba(0,0,0,0.3); height: 12px; border-radius: 6px; overflow: hidden; margin-top: 10px; border: 1px solid var(--glass-border);}
+        body.light-mode .progress-bg { background: rgba(0,0,0,0.05); }
+        .progress-fill { background: linear-gradient(90deg, var(--accent), var(--primary)); height: 100%; width: 0%; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--glass-border); }
+        .list-item:last-child { border: none; }
+        .item-info div { font-size: 1rem; color: var(--text-main); font-weight: bold;}
+        .item-info span { font-size: 0.8rem; color: var(--text-muted); }
+        
+        .chart-box { height: 250px; margin-top: 1rem; }
+        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
+        .empty-state i { font-size: 3rem; color: var(--primary); opacity: 0.5; margin-bottom: 1rem; display: block; }
+        .empty-state h3 { color: var(--text-main); margin-bottom: 0.5rem; font-size: 1.2rem; font-family: 'Space Grotesk', sans-serif;}
+
+        /* MOBILE RESPONSIVO */
         @media (max-width: 768px) {
             .app-layout { flex-direction: column; }
-            .sidebar { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; height: auto; flex-direction: row; justify-content: flex-start; border-right: none; border-top: 1px solid rgba(255,255,255,0.05); padding: 0.5rem 0; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+            .sidebar { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; height: auto; flex-direction: row; justify-content: space-between; border-right: none; border-top: 1px solid var(--glass-border); padding: 0.5rem; overflow-x: auto; background: var(--bg-sidebar); }
             .sidebar::-webkit-scrollbar { display: none; } 
             .logo-lucryo.logo-sidebar { display: none; }
-            .sidebar .nav-item { flex-direction: column; padding: 0.5rem; border-left: none; font-size: 0.75rem; flex: 0 0 75px; }
-            .sidebar .nav-item span { margin-top: 4px; }
+            .sidebar .nav-item { flex-direction: column; padding: 0.3rem; border-left: none; font-size: 0.7rem; flex: 1; min-width: 60px; text-align: center; }
+            .sidebar .nav-item span { margin-top: 4px; display: block; }
             .sidebar .nav-item i.menu-icon { width: auto; font-size: 1.2rem; }
             .sidebar .nav-item.active { background: transparent; border-left-color: transparent; }
-            .premium-lock-icon { right: 5px; top: 5px; }
+            .premium-lock-icon { right: 2px; top: 2px; font-size: 0.6rem !important; }
             .main-wrapper { padding-bottom: 80px; }
-            .main-wrapper header { justify-content: space-between; padding: 0.8rem 1rem; } 
+            .main-wrapper header { padding: 0.8rem 1rem; justify-content: space-between; } 
             .logo-mobile { display: flex; align-items: center; gap: 4px; }
             .main-wrapper main { padding: 1.2rem; }
             .insights-grid { grid-template-columns: 1fr; }
         }
 
-        .card { background: var(--bg-card); padding: 1.5rem; border-radius: 1rem; margin-bottom: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.05); transition: all 0.5s ease; }
-        .card-title { font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-muted); display: flex; align-items: center; gap: 10px; transition: all 0.5s ease; }
-        .card-title i { color: var(--primary); transition: all 0.5s ease; }
-        .finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-        .finance-card { background: var(--bg-card); padding: 1rem; border-radius: 1rem; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        .finance-card .val { font-size: 1.4rem; font-weight: bold; display: block; margin-top: 5px; }
-        .finance-card .label { font-size: 0.8rem; color: var(--text-muted); }
-        .goal-container { margin-bottom: 2rem; position: relative; overflow: hidden; }
-        .progress-bg { background: rgba(0,0,0,0.3); height: 12px; border-radius: 6px; overflow: hidden; margin-top: 10px; }
-        .progress-fill { background: var(--primary); height: 100%; width: 0%; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-        .goal-achieved { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important; border-color: #22c55e !important; box-shadow: 0 0 25px rgba(34, 197, 94, 0.4) !important; transform: scale(1.02); }
-        .goal-achieved .card-title, .goal-achieved .card-title i, .goal-achieved #goal-current, .goal-achieved #goal-total { color: #ffffff !important; }
-        .goal-achieved .progress-bg { background: rgba(255,255,255,0.3) !important; }
-        .goal-achieved .progress-fill { background: #ffffff !important; box-shadow: 0 0 10px rgba(255,255,255,0.8); }
-        .goal-achieved input { background: rgba(0,0,0,0.2); color: white; border-color: rgba(255,255,255,0.3); }
-        .goal-achieved button { background: white; color: #15803d; }
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .list-item:last-child { border: none; }
-        .item-info div { font-size: 0.9rem; color: var(--text-main); }
-        .item-info span { font-size: 0.75rem; color: var(--text-muted); }
-        .chart-box { height: 250px; margin-top: 1rem; }
-        .radar-item { background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 0.8rem; margin-bottom: 0.8rem; border-left: 5px solid transparent; display: flex; flex-direction: column; gap: 10px; }
-        .radar-item.hot { border-left-color: var(--danger); }
-        .radar-item.warm { border-left-color: var(--warning); }
-        .radar-item.active { border-left-color: var(--primary); }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
-        .dot-red { background: var(--danger); }
-        .dot-yellow { background: var(--warning); }
-        .dot-green { background: var(--primary); }
-        .btn-whatsapp { background: #25D366; color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; width: fit-content; transition: opacity 0.2s; }
-        .btn-whatsapp:hover { opacity: 0.9; }
+        /* UPSSELL LOCK */
+        .premium-lock-container { text-align: center; padding: 4rem 2rem; background: var(--glass-bg); border-radius: 1.5rem; border: 1px solid rgba(168, 85, 247, 0.3); box-shadow: 0 10px 30px rgba(168, 85, 247, 0.1); margin-top: 2rem; backdrop-filter: blur(10px);}
+        .premium-lock-container i { font-size: 4rem; color: var(--premium); margin-bottom: 1.5rem; text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .premium-lock-container h2 { font-size: 1.8rem; margin-bottom: 1rem; color: var(--text-main); font-family: 'Space Grotesk', sans-serif;}
         
         .order-item-row { display: grid; grid-template-columns: 1fr 80px 40px; gap: 10px; margin-bottom: 10px; align-items: center; }
         .btn-remove-item { background: var(--danger); color: white; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 40px; }
-        .actions-crud { display: flex; gap: 8px; }
-        .btn-edit { color: var(--primary); cursor: pointer; font-size: 1.1rem; }
-        .btn-delete { color: var(--danger); cursor: pointer; font-size: 1.1rem; }
-        
-        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
-        .empty-state i { font-size: 3rem; color: rgba(255,255,255,0.1); margin-bottom: 1rem; display: block; }
-        .empty-state h3 { color: var(--text-main); margin-bottom: 0.5rem; font-size: 1.2rem; }
-        .empty-state p { font-size: 0.9rem; margin-bottom: 1.5rem; }
-        .empty-state .btn-empty { display: inline-block; background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 0.6rem 1.2rem; border-radius: 0.5rem; font-weight: bold; cursor: pointer; text-decoration: none; transition: var(--transition); }
-        .empty-state .btn-empty:hover { background: var(--primary); color: white; }
-
-        .btn-sm-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: var(--transition); }
-        .btn-sm-outline:hover { background: rgba(255,255,255,0.1); color: white; }
-
-        .onboarding-card { background: linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(15,27,45,0) 100%); border: 1px solid rgba(34,197,94,0.3); }
-        .ob-item { padding: 12px 15px; border-radius: 8px; background: rgba(0,0,0,0.2); margin-bottom: 8px; cursor: pointer; transition: all 0.3s; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.02); }
-        .ob-item:hover { background: rgba(255,255,255,0.05); border-color: rgba(34,197,94,0.2); }
-        .ob-item i { color: var(--text-muted); font-size: 1.2rem; }
-        .ob-item.done { opacity: 0.6; text-decoration: line-through; border-left: 3px solid var(--primary); background: rgba(34,197,94,0.05); }
-        .ob-item.done i { color: var(--primary); }
-
-        /* TELA DE BLOQUEIO PREMIUM */
-        .premium-lock-container { text-align: center; padding: 4rem 2rem; background: var(--bg-card); border-radius: 1rem; border: 1px solid rgba(168, 85, 247, 0.3); box-shadow: 0 10px 30px rgba(168, 85, 247, 0.1); margin-top: 2rem;}
-        .premium-lock-container i { font-size: 4rem; color: var(--premium); margin-bottom: 1.5rem; text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
-        .premium-lock-container h2 { font-size: 1.8rem; margin-bottom: 1rem; color: white; }
-        .premium-lock-container p { color: var(--text-muted); margin-bottom: 2rem; line-height: 1.6; }
+        .actions-crud { display: flex; gap: 12px; }
+        .btn-edit { color: var(--primary); cursor: pointer; font-size: 1.2rem; transition: 0.2s;}
+        .btn-delete { color: var(--danger); cursor: pointer; font-size: 1.2rem; transition: 0.2s;}
+        .btn-edit:hover, .btn-delete:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
-    <div id="screen-login" class="auth-container">
-        
-        <div class="logo-lucryo">
-            <i class="fa-solid fa-arrow-trend-up"></i> LUCRY<span>O</span>
-        </div>
-        
-        <form id="form-login">
-            <div class="form-group"><label>E-mail</label><input type="email" id="login-email" required placeholder="seu@email.com"></div>
-            <div class="form-group"><label>Senha</label><input type="password" id="login-password" required placeholder="••••••••"></div>
-            <button type="submit" class="btn btn-primary">Entrar</button>
-            <button type="button" class="btn btn-outline" onclick="showScreen('screen-signup')">Criar conta</button>
-        </form>
-    </div>
     
-    <div id="screen-signup" class="auth-container hidden">
-        <div class="logo-lucryo">
-            <i class="fa-solid fa-arrow-trend-up"></i> LUCRY<span>O</span>
+    <!-- Luzes de Fundo -->
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <!-- TELA LOGIN/CADASTRO -->
+    <div class="auth-wrapper" id="auth-section">
+        
+        <!-- LOGIN -->
+        <div id="screen-login" class="auth-container">
+            <div class="logo-lucryo"><i class="fa-solid fa-arrow-trend-up"></i> LUCRY<span>O</span></div>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Gestão de Vendas Inteligente</p>
+            <form id="form-login">
+                <div class="form-group"><input type="email" id="login-email" required placeholder="Seu e-mail"></div>
+                <div class="form-group"><input type="password" id="login-password" required placeholder="Sua senha"></div>
+                <button type="submit" class="btn btn-primary">Entrar no Painel</button>
+                <button type="button" class="btn btn-outline" onclick="showScreen('screen-signup')">Criar Nova Conta</button>
+            </form>
         </div>
         
-        <form id="form-signup">
-            <div class="form-group"><label>E-mail</label><input type="email" id="signup-email" required placeholder="seu@email.com"></div>
-            <div class="form-group"><label>Senha</label><input type="password" id="signup-password" required placeholder="Mínimo 6 caracteres"></div>
-            <button type="submit" class="btn btn-primary">Cadastrar</button>
-            <button type="button" class="btn btn-outline" onclick="showScreen('screen-login')">Já tenho conta</button>
-        </form>
+        <!-- CADASTRO -->
+        <div id="screen-signup" class="auth-container hidden">
+            <div class="logo-lucryo"><i class="fa-solid fa-arrow-trend-up"></i> LUCRY<span>O</span></div>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Crie a sua conta e teste grátis</p>
+            <form id="form-signup">
+                <div class="form-group"><input type="email" id="signup-email" required placeholder="Seu melhor e-mail"></div>
+                <div class="form-group"><input type="password" id="signup-password" required placeholder="Crie uma senha (Mínimo 6)"></div>
+                <button type="submit" class="btn btn-primary">Cadastrar e Entrar</button>
+                <button type="button" class="btn btn-outline" onclick="showScreen('screen-login')">Já tenho conta</button>
+            </form>
+        </div>
     </div>
 
+    <!-- APP MAIN -->
     <div id="screen-app" class="hidden app-layout">
         
         <nav class="sidebar">
-            <div class="logo-lucryo logo-sidebar">
-                <i class="fa-solid fa-arrow-trend-up"></i> LUCRY<span>O</span>
-            </div>
+            <div class="logo-lucryo logo-sidebar"><i class="fa-solid fa-arrow-trend-up"></i> LUCRY<span>O</span></div>
             
             <div class="nav-item active" onclick="changeView('home', this)" data-target="home"><i class="fa-solid fa-house menu-icon"></i><span>Home</span></div>
             <div class="nav-item" onclick="changeView('orders', this)" data-target="orders"><i class="fa-solid fa-cart-shopping menu-icon"></i><span>Pedidos</span></div>
@@ -203,131 +217,146 @@
 
         <div class="main-wrapper">
             <header>
-                <div class="logo-lucryo logo-mobile">
-                    <i class="fa-solid fa-arrow-trend-up"></i> LUCRY<span>O</span>
-                </div>
+                <div class="logo-lucryo logo-mobile"><i class="fa-solid fa-arrow-trend-up"></i> LUCRY<span>O</span></div>
                 
-                <div style="display:flex; gap:15px; align-items:center;">
-                    <span id="header-plan-badge" style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; color: var(--text-muted);">Plano Básico</span>
-                    <button class="btn-danger" style="padding: 6px 14px; border-radius: 5px; border:none; cursor:pointer;" onclick="handleLogout()">
-                        <i class="fa-solid fa-right-from-bracket"></i> Sair
+                <div style="display:flex; align-items:center;">
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Alternar Modo Escuro/Claro">
+                        <i class="fas fa-moon" id="theme-icon"></i>
+                    </button>
+                    <span id="header-plan-badge" style="background: rgba(128,128,128,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; margin-right: 15px;">Plano Básico</span>
+                    <button class="btn-danger" style="padding: 6px 12px; border-radius: 6px; border:none; cursor:pointer;" onclick="handleLogout()" title="Sair do Sistema">
+                        <i class="fa-solid fa-right-from-bracket"></i>
                     </button>
                 </div>
             </header>
             
             <main>
+                <!-- TELA DE BLOQUEIO (UPSELL) -->
                 <section id="view-locked" class="view hidden">
                     <div class="premium-lock-container">
                         <i class="fa-solid fa-lock"></i>
                         <h2>Recurso Premium</h2>
-                        <p id="lock-message">Esta funcionalidade é exclusiva para assinantes.</p>
+                        <p id="lock-message" style="color: var(--text-muted); margin-bottom: 2rem;">Esta funcionalidade é exclusiva para assinantes.</p>
                         <button class="btn btn-premium" style="max-width: 250px; margin: 0 auto; display:block;" onclick="falarComSuporte()">
                             <i class="fa-brands fa-whatsapp"></i> Fazer Upgrade Agora
                         </button>
                     </div>
                 </section>
 
+                <!-- DASHBOARD -->
                 <section id="view-home" class="view">
-                    <div class="card onboarding-card hidden" id="onboarding-card">
-                        <div class="card-title" style="color: var(--primary);"><i class="fa-solid fa-rocket"></i> Guia Rápido</div>
-                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Complete os 3 passos para iniciar as vendas.</p>
-                        <div class="progress-bg" style="margin-bottom: 1.5rem; height: 8px;"><div id="ob-progress" class="progress-fill" style="width: 0%;"></div></div>
-                        <div id="ob-step-1" class="ob-item" onclick="changeView('cadastros')"><span>📦 1. Cadastrar produto</span><i class="fa-solid fa-circle-check"></i></div>
-                        <div id="ob-step-2" class="ob-item" onclick="changeView('clients')"><span>👥 2. Adicionar cliente</span><i class="fa-solid fa-circle-check"></i></div>
-                        <div id="ob-step-3" class="ob-item" onclick="changeView('orders')"><span>💰 3. Registrar venda</span><i class="fa-solid fa-circle-check"></i></div>
-                    </div>
-
+                    <!-- CARTÃO DA META -->
                     <div class="card goal-container" id="goal-card">
-                        <div class="card-title"><i class="fa-solid fa-bullseye"></i> Meta Mensal</div>
-                        <div style="display: flex; justify-content: space-between; align-items: baseline;"><span id="goal-current" style="font-size: 1.5rem; font-weight: bold;">R$ 0,00</span><span id="goal-total" style="color: var(--text-muted);">de R$ 0,00</span></div>
+                        <div class="card-title"><i class="fa-solid fa-bullseye"></i> Meta do Mês</div>
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <span id="goal-current" style="font-size: 2rem; font-weight: bold; color: var(--primary);">R$ 0,00</span>
+                            <span id="goal-total" style="color: var(--text-muted);">de R$ 0,00</span>
+                        </div>
                         <div class="progress-bg"><div id="goal-progress" class="progress-fill"></div></div>
-                        <div style="margin-top: 1rem; display: flex; gap: 10px;"><input type="number" id="input-goal" placeholder="Definir Meta (R$)" style="width: 70%;"><button class="btn btn-primary" style="width: 30%; padding: 0.8rem;" onclick="updateGoal()">Salvar</button></div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-title"><i class="fa-solid fa-lightbulb"></i> Inteligência de Negócio</div>
-                        <div class="insights-grid">
-                            <div class="finance-card"><span class="label">Ticket Médio</span><span class="val" id="insight-ticket" style="font-size: 1.2rem; color: var(--primary);">R$ 0,00</span></div>
-                            <div class="finance-card"><span class="label">Produto Campeão</span><span class="val" id="insight-top-product" style="font-size: 1.1rem; margin-top: 8px;">-</span></div>
-                            <div class="finance-card"><span class="label">Cliente Ouro</span><span class="val" id="insight-top-client" style="font-size: 1.1rem; margin-top: 8px; color: var(--warning);">-</span></div>
+                        <div style="margin-top: 1.5rem; display: flex; gap: 10px;">
+                            <input type="number" id="input-goal" placeholder="Definir Nova Meta (R$)" style="width: 70%;">
+                            <button class="btn btn-primary" style="width: 30%;" onclick="updateGoal()">Atualizar</button>
                         </div>
                     </div>
 
+                    <!-- INTELIGÊNCIA CFO -->
+                    <div class="card">
+                        <div class="card-title"><i class="fa-solid fa-lightbulb"></i> Inteligência de Negócio</div>
+                        <div class="insights-grid">
+                            <div class="finance-card"><span class="label">Ticket Médio</span><span class="val" id="insight-ticket" style="color: var(--primary);">R$ 0,00</span></div>
+                            <div class="finance-card"><span class="label">Produto Campeão</span><span class="val" id="insight-top-product" style="font-size: 1.1rem;">-</span></div>
+                            <div class="finance-card"><span class="label">Cliente Ouro</span><span class="val" id="insight-top-client" style="font-size: 1.1rem; color: var(--warning);">-</span></div>
+                        </div>
+                    </div>
+
+                    <!-- GRÁFICO -->
                     <div class="card">
                         <div class="card-title"><i class="fa-solid fa-chart-pie"></i> Vendas por Produto</div>
                         <div class="chart-box"><canvas id="flavorChart"></canvas></div>
                     </div>
                 </section>
+
+                <!-- PEDIDOS -->
                 <section id="view-orders" class="view hidden">
                     <div class="card">
-                        <div class="card-title"><i class="fa-solid fa-plus"></i> Novo Pedido</div>
+                        <div class="card-title"><i class="fa-solid fa-plus"></i> Lançar Venda</div>
                         <form id="form-order">
-                            <div class="form-group"><label>Cliente</label><select id="order-client" required></select></div>
+                            <div class="form-group"><label>Selecione o Cliente</label><select id="order-client" required></select></div>
+                            <label>Produtos do Pedido</label>
                             <div id="order-items-container"></div>
-                            <button type="button" class="btn btn-outline" style="margin-bottom: 1rem;" onclick="addProductRow()"><i class="fa-solid fa-plus"></i> Adicionar Produto</button>
-                            <button type="submit" class="btn btn-primary" id="btn-save-order">Registrar Venda</button>
+                            <button type="button" class="btn btn-outline" style="margin-bottom: 1.5rem;" onclick="addProductRow()"><i class="fa-solid fa-plus"></i> Incluir mais um produto</button>
+                            <button type="submit" class="btn btn-primary" id="btn-save-order">Finalizar e Salvar Venda</button>
                         </form>
                     </div>
-                    <div class="card"><div class="card-title"><i class="fa-solid fa-list"></i> Histórico</div><div id="orders-list"></div></div>
+                    <div class="card"><div class="card-title"><i class="fa-solid fa-list"></i> Histórico Recente</div><div id="orders-list"></div></div>
                 </section>
+
+                <!-- RADAR -->
                 <section id="view-radar" class="view hidden">
                     <div class="card">
-                        <div class="card-title"><i class="fa-solid fa-satellite-dish"></i> Radar de Vendas</div>
-                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Clientes ordenados por urgência de contato.</p>
+                        <div class="card-title"><i class="fa-solid fa-satellite-dish"></i> Radar de Clientes</div>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">Saiba exatamente quem precisa de uma mensagem sua hoje para voltar a comprar.</p>
                         <div id="radar-list"></div>
                     </div>
                 </section>
+
+                <!-- FINANÇAS -->
                 <section id="view-finance" class="view hidden">
                     <div class="finance-grid">
-                        <div class="finance-card"><span class="label">Faturamento</span><span class="val" id="fin-rev">R$ 0,00</span></div>
-                        <div class="finance-card"><span class="label">Custo</span><span class="val" id="fin-cost" style="color: var(--danger);">R$ 0,00</span></div>
+                        <div class="finance-card"><span class="label">Faturamento Total</span><span class="val" id="fin-rev">R$ 0,00</span></div>
+                        <div class="finance-card"><span class="label">Custos Calculados</span><span class="val" id="fin-cost" style="color: var(--danger);">R$ 0,00</span></div>
                     </div>
-                    <div class="card" style="text-align: center;"><span class="label" style="color: var(--text-muted);">Lucro Líquido</span><span class="val" id="fin-profit" style="font-size: 2rem; color: var(--primary);">R$ 0,00</span></div>
-                    <div class="card" style="margin-top: 2rem; border: 1px dashed var(--danger);">
-                        <div class="card-title" style="color: var(--danger);"><i class="fa-solid fa-trash-can" style="color: var(--danger);"></i> Perigo</div>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Apaga permanentemente todos os dados.</p>
-                        <button class="btn btn-danger" onclick="resetSystem()">Resetar Sistema</button>
+                    <div class="card" style="text-align: center; padding: 2rem;">
+                        <span class="label" style="color: var(--text-muted); font-size: 1rem;">Seu Lucro Líquido Real</span>
+                        <span class="val" id="fin-profit" style="font-size: 2.5rem; color: var(--primary); font-family: 'Space Grotesk', sans-serif;">R$ 0,00</span>
                     </div>
                 </section>
+
+                <!-- CLIENTES -->
                 <section id="view-clients" class="view hidden">
                     <div class="card">
                         <div class="card-title"><i class="fa-solid fa-user-plus"></i> Novo Cliente</div>
                         <form id="form-client">
-                            <div class="form-group"><label>Nome / Empresa</label><input type="text" id="client-name" required placeholder="Ex: João Silva"></div>
-                            <div class="form-group"><label>Telefone</label><input type="tel" id="client-phone" required placeholder="(00) 00000-0000"></div>
-                            <div class="form-group"><label>CNPJ</label><input type="text" id="client-cnpj" placeholder="00.000.000/0001-00"></div>
-                            <div class="form-group"><label>Endereço</label><input type="text" id="client-address" placeholder="Rua, número, bairro, cidade"></div>
-                            <button type="submit" class="btn btn-primary" id="btn-save-client">Cadastrar Cliente</button>
+                            <div class="form-group"><input type="text" id="client-name" required placeholder="Nome Completo ou Empresa"></div>
+                            <div class="form-group"><input type="tel" id="client-phone" required placeholder="WhatsApp com DDD (Somente números)"></div>
+                            <div class="form-group"><input type="text" id="client-cnpj" placeholder="CNPJ (Opcional)"></div>
+                            <div class="form-group"><input type="text" id="client-address" placeholder="Endereço de Entrega (Opcional)"></div>
+                            <button type="submit" class="btn btn-primary" id="btn-save-client">Salvar Cliente na Base</button>
                         </form>
                     </div>
                     <div class="card">
-                        <div class="card-title justify-between"><div><i class="fa-solid fa-users"></i> Clientes</div><button class="btn-sm-outline" onclick="exportarClientesCSV()"><i class="fa-solid fa-file-excel"></i> CSV</button></div>
+                        <div class="card-title justify-between"><div><i class="fa-solid fa-users"></i> Meus Clientes</div></div>
                         <div id="clients-list"></div>
                     </div>
                 </section>
+
+                <!-- CADASTROS -->
                 <section id="view-cadastros" class="view hidden">
                     <div class="card">
-                        <div class="card-title"><i class="fa-solid fa-box"></i> Novo Produto</div>
+                        <div class="card-title"><i class="fa-solid fa-box"></i> Adicionar Produto ao Menu</div>
                         <form id="form-product">
-                            <div class="form-group"><label>Nome</label><input type="text" id="prod-name" required placeholder="Ex: Pasta de Alho"></div>
-                            <div class="form-group"><label>Valor (R$)</label><input type="number" id="prod-price" step="0.01" required placeholder="0.00"></div>
-                            <div class="form-group"><label>Custo (R$)</label><input type="number" id="prod-cost" step="0.01" required placeholder="0.00"></div>
+                            <div class="form-group"><input type="text" id="prod-name" required placeholder="Nome do Produto/Serviço"></div>
+                            <div class="form-group"><label>Preço que você Vende</label><input type="number" id="prod-price" step="0.01" required placeholder="R$ 0,00"></div>
+                            <div class="form-group"><label>Preço que lhe Custa (Para o cálculo de Lucro)</label><input type="number" id="prod-cost" step="0.01" required placeholder="R$ 0,00"></div>
                             <button type="submit" class="btn btn-primary">Cadastrar Produto</button>
                         </form>
                     </div>
-                    <div class="card"><div class="card-title"><i class="fa-solid fa-list"></i> Produtos Cadastrados</div><div id="products-list"></div></div>
+                    <div class="card"><div class="card-title"><i class="fa-solid fa-list"></i> Meu Catálogo</div><div id="products-list"></div></div>
                 </section>
+
+                <!-- RELATÓRIOS -->
                 <section id="view-reports" class="view hidden">
                     <div class="card">
-                        <div class="card-title"><i class="fa-solid fa-file-pdf"></i> Relatório Geral (Financeiro)</div>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn btn-primary" onclick="gerarRelatorioFinanceiro()">Baixar PDF</button>
-                            <button class="btn btn-outline" style="margin-top: 0; background: transparent; border-color: #9ca3af; color: #9ca3af;" onclick="exportarPedidosCSV()"><i class="fa-solid fa-file-excel"></i> Excel (.CSV)</button>
+                        <div class="card-title"><i class="fa-solid fa-file-pdf"></i> Balanço Financeiro Geral</div>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Ideal para fechamento de caixa ou envio ao contador.</p>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn btn-primary" style="flex:1;" onclick="gerarRelatorioFinanceiro()"><i class="fa-solid fa-download"></i> Baixar PDF</button>
+                            <button class="btn btn-outline" style="flex:1;" onclick="exportarPedidosCSV()"><i class="fa-solid fa-file-excel"></i> Exportar Excel</button>
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card-title"><i class="fa-solid fa-box"></i> Relatórios e Recibos por Pedido</div>
-                        <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="gerarRelatorioTodosPedidos()">Baixar Todos (PDF)</button>
+                        <div class="card-title"><i class="fa-solid fa-receipt"></i> Recibos Individuais</div>
+                        <button class="btn btn-primary" style="margin-bottom: 1.5rem;" onclick="gerarRelatorioTodosPedidos()"><i class="fa-solid fa-print"></i> Baixar Lote Completo (PDF)</button>
                         <div id="reports-orders-list"></div>
                     </div>
                 </section>
@@ -338,22 +367,42 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             try {
-                // CHAVES DO SUPABASE CORRIGIDAS!
+                // CHAVES DE CONEXÃO DO SUPABASE
                 const SUPABASE_URL = "https://iazehdwsnmunglhdtize.supabase.co";
-                const SUPABASE_KEY = "sb_publishable_rPoTbDXSDr-zHPsgbEqY9Q_vDJklNAG";
+                const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhemVoZHdzbm11bmdsaGR0aXplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNDkyNDgsImV4cCI6MjA5MzYyNTI0OH0.dSzoiA6jIIX5QvQyAnZEaXOmdt1DrQ6Z7XjIv8-B0ec";
                 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
                 let myChart = null; let editingClientId = null; let editingOrderId = null;
                 const getData = (key) => JSON.parse(localStorage.getItem(key)) || [];
                 const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data));
                 
+                // --- Função Tema Claro / Escuro ---
+                window.toggleTheme = function() {
+                    const body = document.body;
+                    const icon = document.getElementById('theme-icon');
+                    body.classList.toggle('light-mode');
+                    if(body.classList.contains('light-mode')) {
+                        icon.classList.replace('fa-moon', 'fa-sun');
+                        localStorage.setItem('lucryo_theme', 'light');
+                    } else {
+                        icon.classList.replace('fa-sun', 'fa-moon');
+                        localStorage.setItem('lucryo_theme', 'dark');
+                    }
+                    if(myChart) renderChart(getData("orders")); // Redesenha o gráfico pra ajustar cores
+                }
+                
+                // Mantém o tema salvo do usuário
+                if(localStorage.getItem('lucryo_theme') === 'light') {
+                    document.body.classList.add('light-mode');
+                    document.getElementById('theme-icon').classList.replace('fa-moon', 'fa-sun');
+                }
+
                 async function syncPlanoNuvem(userId) {
                     try {
                         const { data } = await supabaseClient.from('perfis').select('plano').eq('id', userId).single();
                         if (data && data.plano) {
                             localStorage.setItem('user_plan', data.plano);
                         } else {
-                            await supabaseClient.from('perfis').insert([{ id: userId, plano: 'basico' }]);
                             localStorage.setItem('user_plan', 'basico');
                         }
                     } catch(e) {
@@ -392,20 +441,29 @@
                 if (!localStorage.getItem("orders")) limparMesaLocal();
 
                 window.showScreen = function(screenId) {
-                    ['screen-login', 'screen-signup', 'screen-app'].forEach(id => document.getElementById(id).classList.add('hidden'));
-                    document.getElementById(screenId).classList.remove('hidden');
-                    if(screenId === 'screen-app') { atualizarCadeados(); }
+                    document.getElementById('auth-section').classList.add('hidden');
+                    document.getElementById('screen-app').classList.add('hidden');
+                    document.getElementById('screen-login').classList.add('hidden');
+                    document.getElementById('screen-signup').classList.add('hidden');
+
+                    if(screenId === 'screen-app') { 
+                        document.getElementById('screen-app').classList.remove('hidden');
+                        atualizarCadeados(); 
+                    } else {
+                        document.getElementById('auth-section').classList.remove('hidden');
+                        document.getElementById(screenId).classList.remove('hidden');
+                    }
                 };
 
                 window.changeView = function(viewId, el = null) {
                     const plano = localStorage.getItem('user_plan') || 'basico';
                     
                     if (viewId === 'reports' && plano === 'basico') {
-                        mostrarTelaBloqueada('Relatórios & Exportação', 'Pro (R$ 19,90) ou Premium (R$ 24,90)');
+                        mostrarTelaBloqueada('Relatórios & Exportação', 'Pro ou Premium');
                         marcarMenu(el, viewId); return;
                     }
                     if (viewId === 'radar' && (plano === 'basico' || plano === 'pro')) {
-                        mostrarTelaBloqueada('Radar de Vendas Inteligente', 'Premium (R$ 24,90)');
+                        mostrarTelaBloqueada('Radar de Vendas Inteligente', 'Premium');
                         marcarMenu(el, viewId); return;
                     }
 
@@ -426,12 +484,12 @@
                 function mostrarTelaBloqueada(recursoNome, planosRequeridos) {
                     document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
                     const lockView = document.getElementById('view-locked'); lockView.classList.remove('hidden');
-                    document.getElementById('lock-message').innerHTML = `A ferramenta <strong>${recursoNome}</strong> é exclusiva para assinantes dos planos <strong>${planosRequeridos}</strong>.<br><br>Aumente suas vendas com ferramentas avançadas.`;
+                    document.getElementById('lock-message').innerHTML = `A ferramenta <strong>${recursoNome}</strong> é exclusiva para assinantes dos planos <strong>${planosRequeridos}</strong>.<br><br>Aumente suas vendas com esta ferramenta avançada.`;
                 }
 
                 const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
-                function initApp() { renderHome(); renderOrders(); renderClients(); }
+                function initApp() { renderHome(); renderOrders(); renderClients(); renderProducts(); renderFinance();}
 
                 async function puxarDadosDaNuvem() {
                     try {
@@ -449,23 +507,35 @@
                         const { data: dbPedidos } = await supabaseClient.from('pedidos').select('*');
                         if (dbPedidos) {
                             localStorage.setItem("orders", JSON.stringify(dbPedidos.map(o => ({
-                                id: o.id,
-                                client_name: o.cliente_nome,
-                                items: o.itens || [], 
-                                date: new Date(o.data).toLocaleString("pt-BR", { dateStyle: 'short', timeStyle: 'short' }),
-                                timestamp: new Date(o.data).getTime()
+                                id: o.id, client_name: o.cliente_nome, items: o.itens || [], date: new Date(o.data).toLocaleString("pt-BR", { dateStyle: 'short', timeStyle: 'short' }), timestamp: new Date(o.data).getTime()
                             }))));
                         }
-
                         initApp();
                     } catch(err) { console.error("Erro ao puxar dados:", err); }
                 }
 
+                // --- CADASTRO CORRIGIDO COM INSERÇÃO DO ID NA TABELA PERFIS ---
                 document.getElementById('form-signup').onsubmit = async function(e) {
-                    e.preventDefault(); const email = document.getElementById('signup-email').value, password = document.getElementById('signup-password').value;
+                    e.preventDefault(); 
+                    const email = document.getElementById('signup-email').value;
+                    const password = document.getElementById('signup-password').value;
+                    
                     const { data, error } = await supabaseClient.auth.signUp({ email, password });
-                    if (error) alert("Erro ao criar conta: " + error.message);
-                    else { alert("Conta criada com sucesso! Faça login."); document.getElementById('form-signup').reset(); showScreen('screen-login'); }
+                    if (error) {
+                        alert("Erro ao criar conta: " + error.message);
+                        return;
+                    }
+
+                    if (data.user) {
+                        const { error: insertError } = await supabaseClient.from('perfis').insert([
+                            { id: data.user.id, email: email, plano: 'basico' }
+                        ]);
+                        if(insertError) console.error("Erro perfil interno:", insertError);
+                    }
+
+                    alert("Conta criada com sucesso! Faça login para iniciar."); 
+                    document.getElementById('form-signup').reset(); 
+                    showScreen('screen-login'); 
                 };
 
                 document.getElementById('form-login').onsubmit = async function(e) {
@@ -477,98 +547,82 @@
 
                 window.handleLogout = async function() { await supabaseClient.auth.signOut(); limparMesaLocal(); showScreen('screen-login'); };
 
+                // --- PRODUTOS ---
                 document.getElementById('form-product').onsubmit = async function(e) {
                     e.preventDefault(); const { data: { user } } = await supabaseClient.auth.getUser(); if (!user) return alert("Você precisa estar logado!");
-                    const name = document.getElementById('prod-name').value, price = Number(document.getElementById('prod-price').value), cost = Number(document.getElementById('prod-cost').value);
+                    const products = getData("products"), name = document.getElementById('prod-name').value, price = Number(document.getElementById('prod-price').value), cost = Number(document.getElementById('prod-cost').value);
+                    
                     try { 
-                        await supabaseClient.from('produtos').insert([{ user_id: user.id, nome: name, custo: cost, preco: price }]); 
-                        this.reset(); alert("Produto cadastrado!"); await puxarDadosDaNuvem(); 
-                    } catch (err) { console.error(err); }
+                        const { data: insProd, error } = await supabaseClient.from('produtos').insert([{ user_id: user.id, nome: name, custo: cost, preco: price }]).select();
+                        if(error) throw error;
+                        products.push({ id: insProd[0].id, name, price, cost, created_at: new Date().toLocaleString("pt-BR") }); 
+                        setData("products", products); this.reset(); renderProducts(); renderHome(); alert("Produto cadastrado!");
+                    } catch (err) { alert("Erro ao salvar produto na nuvem."); }
                 };
                 
-                function renderProducts() { const products = getData("products"), list = document.getElementById('products-list'); if (products.length === 0) list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-box-open"></i><h3>Nenhum produto</h3><p>Cadastre seu primeiro produto para vender.</p><button class="btn-empty" onclick="document.getElementById('prod-name').focus()">+ Criar Produto</button></div>`; else list.innerHTML = products.map(p => `<div class="list-item"><div class="item-info"><div><strong>${p.name}</strong></div><span>Venda: ${formatCurrency(p.price)} | Custo: ${formatCurrency(p.cost)}</span><br><span style="font-size: 10px">Cadastrado em: ${p.created_at}</span></div></div>`).join(''); }
+                function renderProducts() { const products = getData("products"), list = document.getElementById('products-list'); if (products.length === 0) list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-box-open"></i><h3>Nenhum produto</h3><p>Cadastre seu primeiro produto para vender.</p></div>`; else list.innerHTML = products.map(p => `<div class="list-item"><div class="item-info"><div><strong>${p.name}</strong></div><span>Venda: ${formatCurrency(p.price)} | Custo: ${formatCurrency(p.cost)}</span></div></div>`).join(''); }
 
+                // --- PEDIDOS E HOME ---
                 function getOrderTotals(o) { let revenue = 0, cost = 0; if (o.items && Array.isArray(o.items)) o.items.forEach(item => { revenue += item.quantity * (item.price || 0); cost += item.quantity * (item.cost || 0); }); else { revenue = o.quantity * (o.price || 0); cost = o.quantity * (o.cost || 0); } return { revenue, cost }; }
+                
                 function renderHome() {
                     const orders = getData("orders"), products = getData("products"), clients = getData("clients"), goals = JSON.parse(localStorage.getItem("goals")) || { amount: 0 };
-                    const obCard = document.getElementById('onboarding-card');
-                    if (products.length > 0 && clients.length > 0 && orders.length > 0) obCard.classList.add('hidden'); else { obCard.classList.remove('hidden'); let progress = 0; const step1 = document.getElementById('ob-step-1'); if (products.length > 0) { step1.classList.add('done'); progress += 33.33; } else step1.classList.remove('done'); const step2 = document.getElementById('ob-step-2'); if (clients.length > 0) { step2.classList.add('done'); progress += 33.33; } else step2.classList.remove('done'); const step3 = document.getElementById('ob-step-3'); if (orders.length > 0) { step3.classList.add('done'); progress += 33.34; } else step3.classList.remove('done'); document.getElementById('ob-progress').style.width = progress + '%'; }
-                    const faturamento = orders.reduce((acc, curr) => acc + getOrderTotals(curr).revenue, 0), metaValor = goals.amount || 0; document.getElementById('goal-current').innerText = formatCurrency(faturamento); document.getElementById('goal-total').innerText = `de ${formatCurrency(metaValor)}`; document.getElementById('goal-progress').style.width = (metaValor > 0 ? Math.min((faturamento / metaValor) * 100, 100) : 0) + "%";
+                    const faturamento = orders.reduce((acc, curr) => acc + getOrderTotals(curr).revenue, 0), metaValor = goals.amount || 0; 
+                    document.getElementById('goal-current').innerText = formatCurrency(faturamento); document.getElementById('goal-total').innerText = `de ${formatCurrency(metaValor)}`; document.getElementById('goal-progress').style.width = (metaValor > 0 ? Math.min((faturamento / metaValor) * 100, 100) : 0) + "%";
                     const goalCard = document.getElementById('goal-card'); if (metaValor > 0 && faturamento >= metaValor) { if (!goalCard.classList.contains('goal-achieved')) { goalCard.classList.add('goal-achieved'); if (typeof confetti === 'function') confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#22c55e', '#ffffff', '#facc15', '#60A5FA'] }); } } else goalCard.classList.remove('goal-achieved');
                     let ticketMedio = 0, topProduct = "-", topClient = "-"; if (orders.length > 0) { ticketMedio = faturamento / orders.length; const clientTotals = {}, productTotals = {}; orders.forEach(o => { const { revenue } = getOrderTotals(o); if (!clientTotals[o.client_name]) clientTotals[o.client_name] = 0; clientTotals[o.client_name] += revenue; if (o.items && Array.isArray(o.items)) o.items.forEach(item => { if (!productTotals[item.product]) productTotals[item.product] = 0; productTotals[item.product] += (item.quantity * (item.price || 0)); }); }); if(Object.keys(clientTotals).length > 0) topClient = Object.keys(clientTotals).reduce((a, b) => clientTotals[a] > clientTotals[b] ? a : b); if(Object.keys(productTotals).length > 0) topProduct = Object.keys(productTotals).reduce((a, b) => productTotals[a] > productTotals[b] ? a : b); }
                     document.getElementById('insight-ticket').innerText = formatCurrency(ticketMedio); document.getElementById('insight-top-product').innerText = topProduct; document.getElementById('insight-top-client').innerText = topClient; renderChart(orders);
                 }
                 window.updateGoal = function() { const val = document.getElementById('input-goal').value; if(!val) return; setData("goals", { amount: Number(val), month: new Date().toISOString().slice(0, 7) }); document.getElementById('input-goal').value = ''; renderHome(); };
-                function renderChart(orders) { const ctx = document.getElementById('flavorChart').getContext('2d'), products = getData("products"); if (products.length === 0 && orders.length === 0) { if(myChart) myChart.destroy(); document.getElementById('flavorChart').style.display = 'none'; const chartBox = document.querySelector('.chart-box'); if (!chartBox.querySelector('.empty-state')) chartBox.innerHTML += `<div class="empty-state" style="padding: 1rem;"><i class="fa-solid fa-chart-pie" style="font-size: 2rem;"></i><p style="margin-top:10px;">Suas vendas aparecerão aqui.</p></div>`; return; } document.getElementById('flavorChart').style.display = 'block'; const emptyState = document.querySelector('.chart-box .empty-state'); if (emptyState) emptyState.remove(); const labels = products.map(p => p.name), colors = ["#60A5FA", "#34D399", "#FBBF24", "#F472B6", "#A78BFA", "#FB7185"]; const counts = labels.map(name => { return orders.reduce((acc, o) => { if (o.items) { const item = o.items.find(i => i.product === name); return acc + (item ? item.quantity : 0); } return acc + (o.product === name ? o.quantity : 0); }, 0); }); if(myChart) myChart.destroy(); myChart = new Chart(ctx, { type: 'pie', data: { labels: labels, datasets: [{ data: counts, backgroundColor: colors, borderColor: "rgba(255,255,255,0.05)", borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af' } } } } }); }
+                
+                function renderChart(orders) { 
+                    const ctx = document.getElementById('flavorChart').getContext('2d'), products = getData("products"); 
+                    if (products.length === 0 && orders.length === 0) { if(myChart) myChart.destroy(); document.getElementById('flavorChart').style.display = 'none'; return; } 
+                    document.getElementById('flavorChart').style.display = 'block'; 
+                    const labels = products.map(p => p.name), colors = ["#00f2ff", "#7000ff", "#FBBF24", "#F472B6", "#A78BFA", "#FB7185"]; 
+                    const counts = labels.map(name => { return orders.reduce((acc, o) => { if (o.items) { const item = o.items.find(i => i.product === name); return acc + (item ? item.quantity : 0); } return acc + (o.product === name ? o.quantity : 0); }, 0); }); 
+                    
+                    Chart.defaults.color = document.body.classList.contains('light-mode') ? '#475569' : '#9ca3af';
+                    if(myChart) myChart.destroy(); 
+                    myChart = new Chart(ctx, { type: 'pie', data: { labels: labels, datasets: [{ data: counts, backgroundColor: colors, borderColor: "rgba(255,255,255,0.05)", borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } }); 
+                }
+
                 function addProductRow(productId = null, quantity = 1) { const container = document.getElementById('order-items-container'), products = getData("products"), row = document.createElement('div'); row.className = 'order-item-row'; let options = products.length === 0 ? `<option disabled selected>Cadastre um produto primeiro</option>` : products.map(p => `<option value="${p.id}" ${p.id == productId ? 'selected' : ''}>${p.name}</option>`).join(''); row.innerHTML = `<select class="item-product" required>${options}</select><input type="number" class="item-qty" value="${quantity}" min="1" required><div class="btn-remove-item" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></div>`; container.appendChild(row); }
-                function renderOrders() { const orders = getData("orders"), clients = getData("clients"), clientSelect = document.getElementById('order-client'); clientSelect.innerHTML = clients.length === 0 ? `<option disabled selected>Cadastre um cliente primeiro</option>` : clients.map(c => `<option value="${c.name}">${c.name}</option>`).join(''); const list = document.getElementById('orders-list'); if (orders.length === 0) list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-receipt"></i><h3>Nenhum pedido</h3><p>Registre sua primeira venda.</p><button class="btn-empty" onclick="document.getElementById('order-client').focus()">+ Novo Pedido</button></div>`; else list.innerHTML = orders.slice().reverse().map(o => { let itemsDisplay = o.items ? o.items.map(i => `${i.product} (${i.quantity}x)`).join('<br>') : `${o.product} (${o.quantity}x)`; const { revenue } = getOrderTotals(o); return `<div class="list-item"><div class="item-info"><div><strong style="display:block">${itemsDisplay}</strong></div><span>${o.client_name} | ${o.date}</span></div><div class="flex items-center gap-10"><div style="font-weight: bold; color: var(--primary); margin-right:15px"> ${formatCurrency(revenue)} </div><div class="actions-crud"><i class="fa-solid fa-pen-to-square btn-edit" onclick="editOrder('${o.id}')"></i><i class="fa-solid fa-trash btn-delete" onclick="deleteOrder('${o.id}')"></i></div></div></div>`; }).join(''); }
+                function renderOrders() { const orders = getData("orders"), clients = getData("clients"), clientSelect = document.getElementById('order-client'); clientSelect.innerHTML = clients.length === 0 ? `<option disabled selected>Cadastre um cliente</option>` : clients.map(c => `<option value="${c.name}">${c.name}</option>`).join(''); const list = document.getElementById('orders-list'); if (orders.length === 0) list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-receipt"></i><h3>Nenhum pedido</h3></div>`; else list.innerHTML = orders.slice().reverse().map(o => { let itemsDisplay = o.items ? o.items.map(i => `${i.product} (${i.quantity}x)`).join('<br>') : `${o.product} (${o.quantity}x)`; const { revenue } = getOrderTotals(o); return `<div class="list-item"><div class="item-info"><div><strong style="display:block">${itemsDisplay}</strong></div><span>${o.client_name} | ${o.date}</span></div><div class="flex items-center gap-10"><div style="font-weight: bold; color: var(--primary); margin-right:15px"> ${formatCurrency(revenue)} </div><div class="actions-crud"><i class="fa-solid fa-pen-to-square btn-edit" onclick="editOrder('${o.id}')"></i><i class="fa-solid fa-trash btn-delete" onclick="deleteOrder('${o.id}')"></i></div></div></div>`; }).join(''); }
                 
                 document.getElementById('form-order').onsubmit = async function(e) { 
                     e.preventDefault(); const { data: { user } } = await supabaseClient.auth.getUser(); if (!user) return; 
-                    const products = getData("products"), itemRows = document.querySelectorAll('.order-item-row'), items = []; 
-                    itemRows.forEach(row => { 
-                        const pId = row.querySelector('.item-product').value, qty = Number(row.querySelector('.item-qty').value), product = products.find(p => p.id == pId); 
-                        if(product) items.push({ product: product.name, product_id: product.id, price: product.price, cost: product.cost, quantity: qty }); 
-                    }); 
-                    if(items.length === 0) return alert("Adicione um produto!"); 
-                    const clientName = document.getElementById('order-client').value; 
-                    if(!clientName || clientName === "Cadastre um cliente primeiro") return alert("Cadastre um cliente!"); 
-                    
-                    try {
-                        if(editingOrderId) {
-                            await supabaseClient.from('pedidos').update({ cliente_nome: clientName, itens: items }).eq('id', editingOrderId);
-                            editingOrderId = null; document.getElementById('btn-save-order').innerText = "Registrar Venda";
-                        } else {
-                            await supabaseClient.from('pedidos').insert([{ user_id: user.id, cliente_nome: clientName, data: new Date().toISOString(), itens: items }]);
-                        }
-                        this.reset(); document.getElementById('order-items-container').innerHTML = ""; addProductRow(); 
-                        alert("Pedido salvo!"); await puxarDadosDaNuvem(); 
-                    } catch (err) { console.error(err); }
+                    const orders = getData("orders"), products = getData("products"), itemRows = document.querySelectorAll('.order-item-row'), items = []; 
+                    itemRows.forEach(row => { const pId = row.querySelector('.item-product').value, qty = Number(row.querySelector('.item-qty').value), product = products.find(p => p.id == pId); if(product) items.push({ product: product.name, product_id: product.id, price: product.price, cost: product.cost, quantity: qty }); }); 
+                    if(items.length === 0) return alert("Adicione um produto!"); const clientName = document.getElementById('order-client').value; if(!clientName || clientName === "Cadastre um cliente") return alert("Cadastre um cliente!"); 
+                    const orderData = { client_name: clientName, items: items, date: new Date().toLocaleString("pt-BR", { dateStyle: 'short', timeStyle: 'short' }), timestamp: Date.now() }; 
+                    try { if(editingOrderId) { await supabaseClient.from('pedidos').update({ cliente_nome: clientName, itens: items }).eq('id', editingOrderId); editingOrderId = null; document.getElementById('btn-save-order').innerText = "Registrar Venda"; } else { const { data: insOrd, error } = await supabaseClient.from('pedidos').insert([{ user_id: user.id, cliente_nome: clientName, data: new Date().toISOString(), itens: items }]).select(); if(error) throw error; orderData.id = insOrd[0].id; orders.push(orderData); } setData("orders", orders); this.reset(); document.getElementById('order-items-container').innerHTML = ""; addProductRow(); renderOrders(); renderHome(); alert("Pedido salvo!"); } catch (err) { alert("Erro ao registrar na nuvem."); }
                 };
                 
-                window.deleteOrder = async function(id) { if(!confirm("Excluir este pedido?")) return; try { await supabaseClient.from('pedidos').delete().eq('id', id); await puxarDadosDaNuvem(); } catch(e){} };
-                window.editOrder = function(id) { 
-                    const o = getData("orders").find(order => String(order.id) === String(id)); 
-                    if(!o) return;
-                    editingOrderId = o.id; 
-                    document.getElementById('order-client').value = o.client_name; document.getElementById('order-items-container').innerHTML = ""; if(o.items) o.items.forEach(item => { const p = getData("products").find(prod => prod.name === item.product) || {id: item.product_id}; addProductRow(p.id, item.quantity); }); else { const p = getData("products").find(prod => prod.name === o.product) || {id: 0}; addProductRow(p.id, o.quantity); } document.getElementById('btn-save-order').innerText = "Atualizar Pedido"; document.getElementById('view-orders').scrollIntoView(); changeView('orders', document.querySelector('.nav-item[data-target="orders"]')); 
-                };
+                window.deleteOrder = async function(id) { if(!confirm("Excluir este pedido?")) return; setData("orders", getData("orders").filter(o => String(o.id) !== String(id))); renderOrders(); renderHome(); try { await supabaseClient.from('pedidos').delete().eq('id', id); } catch(e){} };
+                window.editOrder = function(id) { const o = getData("orders").find(order => String(order.id) === String(id)); if(!o) return; editingOrderId = o.id; document.getElementById('order-client').value = o.client_name; document.getElementById('order-items-container').innerHTML = ""; if(o.items) o.items.forEach(item => { const p = getData("products").find(prod => prod.name === item.product) || {id: item.product_id}; addProductRow(p.id, item.quantity); }); else { const p = getData("products").find(prod => prod.name === o.product) || {id: 0}; addProductRow(p.id, o.quantity); } document.getElementById('btn-save-order').innerText = "Atualizar Pedido"; document.getElementById('view-orders').scrollIntoView(); changeView('orders', document.querySelector('.nav-item[data-target="orders"]')); };
 
+                // --- CLIENTES ---
                 document.getElementById('form-client').onsubmit = async function(e) { 
                     e.preventDefault(); const rawPhone = document.getElementById('client-phone').value.replace(/\D/g, ''); if (rawPhone.length !== 11) return alert("11 números (com DDD)."); const rawCnpj = document.getElementById('client-cnpj').value.replace(/\D/g, ''); if (rawCnpj.length > 0 && rawCnpj.length !== 14) return alert("CNPJ 14 números."); 
                     const { data: { user } } = await supabaseClient.auth.getUser(); if (!user) return; 
-                    const clientData = { name: document.getElementById('client-name').value, phone: document.getElementById('client-phone').value, cnpj: document.getElementById('client-cnpj').value, address: document.getElementById('client-address').value }; 
-                    
-                    try {
-                        if(editingClientId) {
-                            await supabaseClient.from('clientes').update({ nome: clientData.name, telefone: clientData.phone, cnpj: clientData.cnpj || '', endereco: clientData.address || '' }).eq('id', editingClientId);
-                            editingClientId = null; document.getElementById('btn-save-client').innerText = "Cadastrar Cliente";
-                        } else {
-                            await supabaseClient.from('clientes').insert([{ user_id: user.id, nome: clientData.name, telefone: clientData.phone, cnpj: clientData.cnpj || '', endereco: clientData.address || '' }]);
-                        } 
-                        this.reset(); alert("Cliente salvo!"); await puxarDadosDaNuvem(); 
-                    } catch (err) { console.error(err); }
+                    const clients = getData("clients"), clientData = { name: document.getElementById('client-name').value, phone: document.getElementById('client-phone').value, cnpj: document.getElementById('client-cnpj').value, address: document.getElementById('client-address').value }; 
+                    try { if(editingClientId) { await supabaseClient.from('clientes').update({ nome: clientData.name, telefone: clientData.phone, cnpj: clientData.cnpj || '', endereco: clientData.address || '' }).eq('id', editingClientId); const idx = clients.findIndex(c => String(c.id) === String(editingClientId)); if(idx !== -1) clients[idx] = { id: editingClientId, ...clientData }; editingClientId = null; document.getElementById('btn-save-client').innerText = "Cadastrar Cliente"; } else { const { data: insCli, error } = await supabaseClient.from('clientes').insert([{ user_id: user.id, nome: clientData.name, telefone: clientData.phone, cnpj: clientData.cnpj || '', endereco: clientData.address || '' }]).select(); if(error) throw error; clients.push({ id: insCli[0].id, ...clientData }); } setData("clients", clients); this.reset(); renderClients(); renderOrders(); alert("Cliente salvo!"); } catch (err) { alert("Erro na nuvem."); }
                 };
                 
-                function renderClients() { const clients = getData("clients"), list = document.getElementById('clients-list'); if (clients.length === 0) list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-users-slash"></i><h3>Nenhum cliente</h3><button class="btn-empty" onclick="document.getElementById('client-name').focus()">+ Cadastrar</button></div>`; else list.innerHTML = clients.map(c => `<div class="list-item"><div class="item-info"><div><strong>${c.name}</strong></div><span>${c.phone} | CNPJ: ${c.cnpj || 'Não informado'}</span><br><span style="font-size: 0.7rem; color: var(--text-muted)">${c.address || 'Endereço não informado'}</span></div><div class="actions-crud"><i class="fa-solid fa-pen-to-square btn-edit" onclick="editClient('${c.id}')"></i><i class="fa-solid fa-trash btn-delete" onclick="deleteClient('${c.id}')"></i></div></div>`).join(''); }
-                
-                window.deleteClient = async function(id) { if(!confirm("Excluir cliente?")) return; try { await supabaseClient.from('clientes').delete().eq('id', id); await puxarDadosDaNuvem(); } catch(e){} };
-                window.editClient = function(id) { 
-                    const c = getData("clients").find(client => String(client.id) === String(id)); 
-                    if(!c) return;
-                    editingClientId = c.id; 
-                    document.getElementById('client-name').value = c.name; document.getElementById('client-phone').value = c.phone; document.getElementById('client-cnpj').value = c.cnpj; document.getElementById('client-address').value = c.address || ""; document.getElementById('btn-save-client').innerText = "Atualizar Cliente"; document.getElementById('view-clients').scrollIntoView(); 
-                };
+                function renderClients() { const clients = getData("clients"), list = document.getElementById('clients-list'); if (clients.length === 0) list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-users-slash"></i><h3>Nenhum cliente</h3><button class="btn-empty" onclick="document.getElementById('client-name').focus()">+ Cadastrar</button></div>`; else list.innerHTML = clients.map(c => `<div class="list-item"><div class="item-info"><div><strong>${c.name}</strong></div><span>${c.phone} | CNPJ: ${c.cnpj || 'Não informado'}</span></div><div class="actions-crud"><i class="fa-solid fa-pen-to-square btn-edit" onclick="editClient('${c.id}')"></i><i class="fa-solid fa-trash btn-delete" onclick="deleteClient('${c.id}')"></i></div></div>`).join(''); }
+                window.deleteClient = async function(id) { if(!confirm("Excluir cliente?")) return; setData("clients", getData("clients").filter(c => String(c.id) !== String(id))); renderClients(); renderOrders(); try { await supabaseClient.from('clientes').delete().eq('id', id); } catch(e){} };
+                window.editClient = function(id) { const c = getData("clients").find(client => String(client.id) === String(id)); if(!c) return; editingClientId = c.id; document.getElementById('client-name').value = c.name; document.getElementById('client-phone').value = c.phone; document.getElementById('client-cnpj').value = c.cnpj; document.getElementById('client-address').value = c.address || ""; document.getElementById('btn-save-client').innerText = "Atualizar Cliente"; document.getElementById('view-clients').scrollIntoView(); };
 
-                function renderRadar() { const orders = getData("orders"), clients = getData("clients"), radarList = document.getElementById('radar-list'), now = new Date(); if(clients.length === 0) { radarList.innerHTML = `<div class="empty-state"><i class="fa-solid fa-satellite"></i><h3>Radar Desativado</h3><p>Cadastre clientes e registre vendas para que o radar comece a mapear oportunidades.</p></div>`; return; } const analysis = clients.map(client => { const clientOrders = orders.filter(o => o.client_name === client.name); if(clientOrders.length === 0) return { ...client, days: 99, status: 'hot', label: 'Nunca comprou' }; const lastOrderTimestamp = Math.max(...clientOrders.map(o => o.timestamp)), diffDays = Math.floor(Math.abs(now - new Date(lastOrderTimestamp)) / (1000 * 60 * 60 * 24)); let status = '🟢 Ativo', statusClass = 'active', dotClass = 'dot-green'; if(diffDays >= 7) { status = '🔴 Quente'; statusClass = 'hot'; dotClass = 'dot-red'; } else if(diffDays >= 3) { status = '🟡 Morno'; statusClass = 'warm'; dotClass = 'dot-yellow'; } return { ...client, days: diffDays, status, statusClass, dotClass }; }); analysis.sort((a, b) => b.days - a.days); radarList.innerHTML = analysis.map(item => { const cleanPhone = item.phone.replace(/\D/g, ''), waLink = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent("Bom dia, tudo certo? Como andam as vendas?")}`; return `<div class="radar-item ${item.statusClass}"><div class="justify-between items-center" style="display:flex; justify-content:space-between; align-items:center;"><div class="item-info"><div><span class="status-dot ${item.dotClass}"></span><strong>${item.name}</strong></div><span>${item.days === 99 ? item.label : `${item.days} dias sem comprar`}</span></div><div style="font-size: 0.8rem; font-weight: bold;">${item.status}</div></div>${item.days >= 3 ? `<a href="${waLink}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> Chamar no WhatsApp </a>` : ''}</div>`; }).join(''); }
+                function renderRadar() { const orders = getData("orders"), clients = getData("clients"), radarList = document.getElementById('radar-list'), now = new Date(); if(clients.length === 0) { radarList.innerHTML = `<div class="empty-state"><i class="fa-solid fa-satellite"></i><h3>Radar Desativado</h3></div>`; return; } const analysis = clients.map(client => { const clientOrders = orders.filter(o => o.client_name === client.name); if(clientOrders.length === 0) return { ...client, days: 99, status: 'hot', label: 'Nunca comprou' }; const lastOrderTimestamp = Math.max(...clientOrders.map(o => o.timestamp)), diffDays = Math.floor(Math.abs(now - new Date(lastOrderTimestamp)) / (1000 * 60 * 60 * 24)); let status = '🟢 Ativo', statusClass = 'active', dotClass = 'dot-green'; if(diffDays >= 7) { status = '🔴 Quente'; statusClass = 'hot'; dotClass = 'dot-red'; } else if(diffDays >= 3) { status = '🟡 Morno'; statusClass = 'warm'; dotClass = 'dot-yellow'; } return { ...client, days: diffDays, status, statusClass, dotClass }; }); analysis.sort((a, b) => b.days - a.days); radarList.innerHTML = analysis.map(item => { const cleanPhone = item.phone.replace(/\D/g, ''), waLink = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent("Bom dia, tudo certo? Como andam as vendas?")}`; return `<div class="radar-item ${item.statusClass}"><div class="justify-between items-center" style="display:flex; justify-content:space-between; align-items:center;"><div class="item-info"><div><span class="status-dot ${item.dotClass}"></span><strong>${item.name}</strong></div><span>${item.days === 99 ? item.label : `${item.days} dias sem comprar`}</span></div><div style="font-size: 0.8rem; font-weight: bold;">${item.status}</div></div>${item.days >= 3 ? `<a href="${waLink}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> Chamar no WhatsApp </a>` : ''}</div>`; }).join(''); }
                 function renderFinance() { const orders = getData("orders"); let faturamento = 0, custoTotal = 0; orders.forEach(o => { const { revenue, cost } = getOrderTotals(o); faturamento += revenue; custoTotal += cost; }); document.getElementById('fin-rev').innerText = formatCurrency(faturamento); document.getElementById('fin-cost').innerText = formatCurrency(custoTotal); document.getElementById('fin-profit').innerText = formatCurrency(faturamento - custoTotal); }
-                window.resetSystem = async function() { if(confirm("Apagar TUDO da nuvem?")) { try { const { data: { user } } = await supabaseClient.auth.getUser(); if (user) { await supabaseClient.from('pedidos').delete().eq('user_id', user.id); await supabaseClient.from('produtos').delete().eq('user_id', user.id); await supabaseClient.from('clientes').delete().eq('user_id', user.id); } limparMesaLocal(); alert("Sistema resetado!"); location.reload(); } catch (err) {} } };
-
+                
+                // CSV, PDF E ZAP
                 function downloadCSV(csv, filename) { const csvFile = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8;"}); const downloadLink = document.createElement("a"); downloadLink.download = filename; downloadLink.href = window.URL.createObjectURL(csvFile); downloadLink.style.display = "none"; document.body.appendChild(downloadLink); downloadLink.click(); document.body.removeChild(downloadLink); }
                 window.exportarClientesCSV = function() { const clients = getData("clients"); if (!clients.length) return alert("Sem dados."); let csv = "Nome;Telefone;CNPJ;Endereco\n"; clients.forEach(c => { csv += `"${c.name}";"${c.phone}";"${c.cnpj || ''}";"${c.address || ''}"\n`; }); downloadCSV(csv, "clientes_lucryo.csv"); };
                 window.exportarPedidosCSV = function() { const orders = getData("orders"); if (!orders.length) return alert("Sem dados."); let csv = "Data;Cliente;Produtos;Valor Total\n"; orders.forEach(o => { let produtosStr = o.items ? o.items.map(i => `${i.quantity}x ${i.product}`).join(', ') : `${o.quantity}x ${o.product}`; const { revenue } = getOrderTotals(o); csv += `"${o.date}";"${o.client_name}";"${produtosStr}";"${formatCurrency(revenue)}"\n`; }); downloadCSV(csv, "pedidos_lucryo.csv"); };
 
-                function renderReports() { const orders = getData("orders"), list = document.getElementById('reports-orders-list'); if (orders.length === 0) list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-file-invoice"></i><h3>Nenhum relatório</h3></div>`; else list.innerHTML = orders.slice().reverse().map(o => `<div class="list-item"><div class="item-info"><div><strong>${o.items ? o.items.map(i=>i.product).join(', ') : o.product}</strong> - ${o.client_name}</div><span>${o.date} | Total: ${formatCurrency(getOrderTotals(o).revenue)}</span></div><div style="display: flex; gap: 5px;"><button class="btn btn-primary" style="width: auto; padding: 5px 10px; font-size: 12px; background-color: #25D366; border-color: #25D366;" onclick="enviarReciboWhatsApp('${o.id}')"><i class="fa-brands fa-whatsapp"></i></button><button class="btn btn-primary" style="width: auto; padding: 5px 10px; font-size: 12px;" onclick="gerarRelatorioPedido('${o.id}')">PDF</button></div></div>`).join(''); }
+                function renderReports() { const orders = getData("orders"), list = document.getElementById('reports-orders-list'); if (orders.length === 0) list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-file-invoice"></i><h3>Nenhum relatório</h3></div>`; else list.innerHTML = orders.slice().reverse().map(o => `<div class="list-item"><div class="item-info"><div><strong>${o.items ? o.items.map(i=>i.product).join(', ') : o.product}</strong> - ${o.client_name}</div><span>${o.date} | Total: ${formatCurrency(getOrderTotals(o).revenue)}</span></div><div style="display: flex; gap: 5px;"><button class="btn btn-primary" style="width: auto; padding: 8px 12px; font-size: 14px; background: #25D366; border: none; border-radius: 8px;" onclick="enviarReciboWhatsApp('${o.id}')"><i class="fa-brands fa-whatsapp"></i></button><button class="btn btn-outline" style="width: auto; padding: 8px 12px; font-size: 14px; border: 1px solid var(--primary); border-radius: 8px;" onclick="gerarRelatorioPedido('${o.id}')"><i class="fa-solid fa-print"></i></button></div></div>`).join(''); }
                 window.enviarReciboWhatsApp = async function(orderId) { const orders = getData("orders"), clients = getData("clients"), o = orders.find(order => String(order.id) === String(orderId)); if (!o) return; const cliente = clients.find(c => c.name === o.client_name); let telefone = cliente ? cliente.phone.replace(/\D/g, '') : ''; if (telefone.length === 11) telefone = '55' + telefone; else telefone = ''; const { revenue } = getOrderTotals(o), totalFormatado = formatCurrency(revenue); alert("Aguarde, gerando link..."); try { const { jsPDF } = window.jspdf; const doc = new jsPDF({ unit: 'mm', format: [80, 150] }); drawCoupon(doc, o, 15); const pdfBlob = doc.output('blob'), fileName = `recibo_${o.id}.pdf`; await supabaseClient.storage.from('recibos').upload(fileName, pdfBlob, { contentType: 'application/pdf', upsert: true }); const { data } = supabaseClient.storage.from('recibos').getPublicUrl(fileName); const texto = `Olá *${o.client_name}*!\nSeu pedido de *${totalFormatado}* foi registrado.\nRecibo: ${data.publicUrl}`; window.open(telefone ? `https://wa.me/${telefone}?text=${encodeURIComponent(texto)}` : `https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank'); } catch (error) { alert("Erro ao gerar recibo."); } };
                 window.gerarRelatorioFinanceiro = function() { const { jsPDF } = window.jspdf; const doc = new jsPDF(), orders = getData("orders"); if(orders.length === 0) return; let faturamento = 0, custoTotal = 0; orders.forEach(o => { const { revenue, cost } = getOrderTotals(o); faturamento += revenue; custoTotal += cost; }); doc.setFontSize(18); doc.text("Relatorio Lucryo", 20, 20); doc.setFontSize(12); doc.text(`Faturamento: ${formatCurrency(faturamento)}`, 20, 40); doc.text(`Custo: ${formatCurrency(custoTotal)}`, 20, 50); doc.text(`Lucro: ${formatCurrency(faturamento - custoTotal)}`, 20, 60); let y = 80; doc.setFontSize(9); orders.forEach((o) => { if(y > 280) { doc.addPage(); y = 20; } doc.text(`${o.date} | ${o.client_name} | Total: ${formatCurrency(getOrderTotals(o).revenue)}`, 20, y); y += 7; }); doc.save(`Financeiro_Lucryo.pdf`); };
                 function drawCoupon(doc, o, yStart) { const clients = getData("clients"), cData = clients.find(c => c.name === o.client_name), margin = 5, contentWidth = 70, center = 40; doc.setFont("courier", "bold"); doc.setFontSize(14); doc.text("LUCRYO", center, yStart, { align: "center" }); let y = yStart + 14; doc.setFontSize(9); doc.text(`Data: ${o.date}`, margin, y); y += 5; doc.text(`Cliente: ${o.client_name}`, margin, y); y += 5; doc.text("-".repeat(38), margin, y); y += 7; doc.setFontSize(10); const items = o.items || [{ product: o.product, quantity: o.quantity, price: o.price }]; items.forEach(item => { const lines = doc.splitTextToSize(item.product.toUpperCase(), contentWidth); doc.text(lines, margin, y); y += (lines.length * 5); doc.setFontSize(8); doc.text(`${item.quantity} x ${formatCurrency(item.price || 0)} = ${formatCurrency(item.quantity * (item.price || 0))}`, margin, y); y += 7; }); doc.text("-".repeat(38), margin, y); y += 7; doc.setFontSize(12); doc.text(`TOTAL: ${formatCurrency(getOrderTotals(o).revenue)}`, margin, y); return y + 15; }
@@ -576,7 +630,18 @@
                 window.gerarRelatorioTodosPedidos = function() { const { jsPDF } = window.jspdf; const doc = new jsPDF({ unit: 'mm', format: [80, 150] }), orders = getData("orders"); orders.slice().reverse().forEach((o, i) => { if(i > 0) doc.addPage(); drawCoupon(doc, o, 15); }); doc.save(`Cupons_Lucryo.pdf`); };
 
                 window.addProductRow = addProductRow;
-                supabaseClient.auth.getSession().then(({ data: { session } }) => { if (session) { localStorage.setItem("user", JSON.stringify({ email: session.user.email })); showScreen('screen-app'); puxarDadosDaNuvem(); } else showScreen('screen-login'); });
+                
+                // INICIA SESSÃO (Gatekeeper)
+                supabaseClient.auth.getSession().then(({ data: { session } }) => { 
+                    if (session) { 
+                        document.getElementById('auth-section').classList.add('hidden');
+                        document.getElementById('screen-app').classList.remove('hidden');
+                        puxarDadosDaNuvem(); 
+                    } else { 
+                        document.getElementById('auth-section').classList.remove('hidden');
+                        document.getElementById('screen-app').classList.add('hidden');
+                    } 
+                });
 
             } catch (error) { console.error("Erro crítico:", error); }
         });
