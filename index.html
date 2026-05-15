@@ -39,7 +39,7 @@
         h1, h2, h3, h4, .logo-lucryo, .plan-name, .plan-price { font-family: 'Space Grotesk', sans-serif; }
         .hidden { display: none !important; }
 
-        /* Luzes de Fundo (Glows) - Otimizadas com Aceleração de Hardware */
+        /* Luzes de Fundo (Glows) */
         .glow { position: absolute; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.3; pointer-events: none; transform: translateZ(0); will-change: transform; }
         .glow-1 { top: -10%; left: -10%; width: 400px; height: 400px; background: var(--primary); }
         .glow-2 { top: 40%; right: -10%; width: 500px; height: 500px; background: var(--accent); }
@@ -51,7 +51,7 @@
         .logo-lucryo span { color: var(--primary); }
         .logo-lucryo.footer-logo { justify-content: center; margin-bottom: 1rem; font-size: 2.5rem; }
 
-        /* HEADER GLASSMORPHISM */
+        /* HEADER */
         header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5%; background: rgba(2, 6, 23, 0.7); position: fixed; width: 100%; top: 0; z-index: 1000; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--glass-border); transition: var(--transition); }
         body.light-mode header { background: rgba(255, 255, 255, 0.85); }
         
@@ -59,7 +59,6 @@
         .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 600; transition: var(--transition); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
         .nav-links a:hover { color: var(--primary); text-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
         
-        /* Botões */
         .btn-login { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 0.6rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: bold; transition: var(--transition); font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; }
         .btn-login:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }
         
@@ -92,7 +91,7 @@
         .feature-card h3 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-main); }
         .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
 
-        /* MODAL ESTRUTURA */
+        /* MODAL */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 2000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         body.light-mode .modal-overlay { background: rgba(255, 255, 255, 0.85); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
@@ -115,38 +114,32 @@
         .modal-benefit h4 i { color: var(--accent); }
         .modal-benefit p { color: var(--text-muted); font-size: 0.95rem; margin: 0; }
 
-        /* ANIMAÇÕES OTIMIZADAS */
+        /* ANIMAÇÕES VISUAIS */
         .visual-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; position: relative; }
-        
         .v-card { background: rgba(128,128,128,0.1); backdrop-filter: blur(5px); padding: 1rem 2rem; border-radius: 10px; color: var(--text-main); font-weight: bold; border: 1px solid var(--glass-border); animation: float 4s ease-in-out infinite; transform: translateZ(0); will-change: transform; font-family: 'Space Grotesk', sans-serif;}
         body.light-mode .v-card { background: #ffffff; }
         .v-card.small { font-size: 0.9rem; padding: 0.8rem 1.5rem; animation-delay: 1.5s; background: rgba(0, 242, 255, 0.1); border-color: rgba(0, 242, 255, 0.3); color: var(--primary);}
         .v-circle-chart { width: 130px; height: 130px; border-radius: 50%; background: conic-gradient(var(--primary) 0% 65%, var(--accent) 65% 100%); margin-bottom: -30px; border: 6px solid var(--bg-body); animation: pulse 3s infinite; }
-
         .v-receipt { background: #ffffff; width: 130px; height: 170px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; padding: 1.2rem 1rem; gap: 10px; position: relative; animation: slideUp 3s ease-out infinite alternate; transform: translateZ(0); will-change: transform; }
         .v-receipt i { color: var(--accent); font-size: 2.5rem; margin-bottom: 5px; }
         .v-line { width: 100%; height: 6px; background: #cbd5e1; border-radius: 3px; }
         .v-line.short { width: 60%; }
         .v-whatsapp-badge { position: absolute; bottom: -15px; right: -25px; background: #25D366; color: white; padding: 8px 15px; border-radius: 20px; font-weight: bold; display: flex; align-items: center; gap: 6px; animation: popIn 3s infinite alternate; font-size: 0.9rem; border: 2px solid white;}
-
         .v-checkout { background: rgba(128,128,128,0.1); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.2rem; width: 90%; display: flex; flex-direction: column; gap: 10px; }
         body.light-mode .v-checkout { background: #ffffff; }
         .v-item { background: rgba(128,128,128,0.05); padding: 12px; border-radius: 8px; color: var(--text-main); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--glass-border); font-family: 'Space Grotesk', sans-serif;}
         .v-item i { color: var(--primary); }
         .v-btn { background: linear-gradient(90deg, var(--accent), var(--primary)); color: white; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: 5px; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; font-family: 'Space Grotesk', sans-serif;}
-
         .v-balance { display: flex; flex-direction: column; gap: 12px; width: 90%; }
         .v-balance > div { padding: 1rem 1.2rem; border-radius: 10px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--glass-border); font-family: 'Space Grotesk', sans-serif;}
         body.light-mode .v-balance > div { background: #ffffff; }
         .v-balance .v-green { background: rgba(0, 242, 255, 0.1); color: var(--primary); animation: floatRight 4s infinite alternate; transform: translateZ(0); will-change: transform;}
         .v-balance .v-red { background: rgba(239, 68, 68, 0.1); color: var(--danger); animation: floatLeft 4s infinite alternate; transform: translateZ(0); will-change: transform;}
         .v-balance .v-total { background: rgba(128,128,128,0.1); color: var(--text-main); justify-content: center; font-size: 1.2rem; margin-top: 10px; border-left: 4px solid var(--primary); animation: pulse 3s infinite;}
-
         .v-radar-icon { font-size: 5rem; color: var(--primary); opacity: 0.9; animation: spin 4s linear infinite; margin-bottom: 1.5rem; transform: translateZ(0); will-change: transform;}
         .v-client { padding: 12px 20px; border-radius: 20px; font-weight: bold; display: flex; align-items: center; gap: 10px; position: relative; font-family: 'Space Grotesk', sans-serif; transform: translateZ(0); will-change: transform;}
         .v-client.v-green { background: rgba(0, 242, 255, 0.1); color: var(--primary); border: 1px solid rgba(0, 242, 255, 0.3); transform: translateX(-30px); animation: float 3s ease-in-out infinite;}
         .v-client.v-red { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); transform: translateX(30px); animation: float 3s ease-in-out infinite; animation-delay: 1.5s; }
-
         .exp-visual { flex-direction: row; flex-wrap: wrap; gap: 2rem;}
         .v-file { width: 100px; height: 130px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; gap: 10px; font-size: 1.2rem; color: white; animation: float 3s ease-in-out infinite; font-family: 'Space Grotesk', sans-serif; transform: translateZ(0); will-change: transform;}
         .v-file i { font-size: 2.5rem; }
@@ -198,7 +191,7 @@
         body.light-mode footer { background: rgba(255,255,255,0.5); }
         .footer-text { color: var(--text-muted); font-size: 0.95rem; }
 
-        /* MOBILE RESPONSIVO (OTIMIZADO) */
+        /* MOBILE RESPONSIVO */
         @media (max-width: 768px) {
             .mobile-hide { display: none !important; }
             header { padding: 1rem 5%; }
@@ -257,43 +250,36 @@
         <p class="section-subtitle">Clique nos cartões abaixo para entender como cada ferramenta trabalha por você.</p>
         
         <div class="features-grid">
-            
             <div class="feature-card" onclick="openModal('cfo')">
                 <div class="feature-icon"><i class="fa-solid fa-lightbulb"></i></div>
                 <h3>Painel Inteligente (CFO)</h3>
                 <p>Veja seu faturamento, lucro e produtos mais vendidos em tempo real, sem precisar calcular nada.</p>
             </div>
-
             <div class="feature-card" onclick="openModal('recibos')">
                 <div class="feature-icon"><i class="fa-brands fa-whatsapp"></i></div>
                 <h3>Recibos no WhatsApp</h3>
                 <p>Gere cupons fiscais/recibos em PDF e envie direto no WhatsApp do cliente com um único clique.</p>
             </div>
-
             <div class="feature-card" onclick="openModal('pdv')">
                 <div class="feature-icon"><i class="fa-solid fa-cart-shopping"></i></div>
                 <h3>Gestão de Pedidos</h3>
                 <p>Lance novas vendas em 3 cliques. Selecione o cliente, adicione os produtos e o sistema faz o resto.</p>
             </div>
-
             <div class="feature-card" onclick="openModal('custos')">
                 <div class="feature-icon"><i class="fa-solid fa-box-open"></i></div>
                 <h3>Controle de Custos</h3>
                 <p>A LUCRYO separa faturamento de custo de mercadoria para te dar o lucro real.</p>
             </div>
-
             <div class="feature-card" onclick="openModal('radar')">
                 <div class="feature-icon"><i class="fa-solid fa-satellite-dish"></i></div>
                 <h3>Radar de Vendas (CRM)</h3>
                 <p>Nossa IA avisa quais clientes estão sumidos há dias para você chamar no WhatsApp na hora certa.</p>
             </div>
-
             <div class="feature-card" onclick="openModal('exportacao')">
                 <div class="feature-icon"><i class="fa-solid fa-file-excel"></i></div>
                 <h3>Exportação Total</h3>
                 <p>Você é dono dos seus dados. Baixe todo o histórico financeiro em PDF ou exporte para o Excel.</p>
             </div>
-
         </div>
     </section>
 
@@ -301,9 +287,7 @@
         <div class="modal-content">
             <button class="modal-close" onclick="forceCloseModal()"><i class="fa-solid fa-xmark"></i></button>
             <div class="modal-body">
-                
                 <div class="modal-visual-container" id="modalVisual"></div>
-                
                 <div class="modal-text-container">
                     <h2 id="modalTitle"><i class="fa-solid fa-check"></i> Titulo</h2>
                     <p id="modalDesc" class="modal-desc">Descrição detalhada vai aqui.</p>
@@ -340,6 +324,7 @@
                 <div class="popular-badge">LOTE FUNDADOR</div>
                 <div class="plan-name" style="color: var(--primary);">Pro</div>
                 <span class="price-anchor">De R$ 69,90 por</span>
+                
                 <div class="plan-price">R$ 16<span>,90/mês</span></div>
                 <p class="plan-desc">Para quem precisa de controle total e relatórios.</p>
                 <ul class="features-list">
@@ -377,7 +362,6 @@
     </footer>
 
     <script>
-        // Lógica do Modo Claro/Escuro
         function toggleTheme() {
             const body = document.body;
             const icon = document.getElementById('theme-icon');
@@ -391,93 +375,45 @@
             }
         }
         
-        // Verifica preferência guardada
         if(localStorage.getItem('lucryo_landing_theme') === 'light') {
             document.body.classList.add('light-mode');
             document.getElementById('theme-icon').classList.replace('fa-moon', 'fa-sun');
         }
 
-        // Dados do Modal
         const featureData = {
             'cfo': {
                 title: '<i class="fa-solid fa-lightbulb"></i> Painel Inteligente (CFO)',
-                visual: `
-                    <div class="visual-wrapper">
-                        <div class="v-card"><i class="fa-solid fa-chart-simple" style="color: var(--primary);"></i> Faturamento Mensal</div>
-                        <div class="v-card small"><i class="fa-solid fa-trophy"></i> Produto Campeão</div>
-                        <div class="v-circle-chart"></div>
-                    </div>
-                `,
+                visual: '<div class="visual-wrapper"><div class="v-card"><i class="fa-solid fa-chart-simple" style="color: var(--primary);"></i> Faturamento Mensal</div><div class="v-card small"><i class="fa-solid fa-trophy"></i> Produto Campeão</div><div class="v-circle-chart"></div></div>',
                 desc: 'Assim que você entra na LUCRYO, você é recebido com uma visão geral do seu negócio. Acompanhe a sua barra de metas encher e analise gráficos dinâmicos.',
                 benefit: 'O sistema vasculha todos os pedidos e te diz instantaneamente qual o seu Ticket Médio, qual produto dá mais lucro e quem é o seu "Cliente Ouro".'
             },
             'recibos': {
                 title: '<i class="fa-brands fa-whatsapp"></i> Recibos no WhatsApp',
-                visual: `
-                    <div class="visual-wrapper">
-                        <div class="v-receipt">
-                            <i class="fa-solid fa-file-invoice-dollar"></i>
-                            <div class="v-line"></div>
-                            <div class="v-line"></div>
-                            <div class="v-line short"></div>
-                            <div class="v-whatsapp-badge"><i class="fa-brands fa-whatsapp"></i> Enviado!</div>
-                        </div>
-                    </div>
-                `,
+                visual: '<div class="visual-wrapper"><div class="v-receipt"><i class="fa-solid fa-file-invoice-dollar"></i><div class="v-line"></div><div class="v-line"></div><div class="v-line short"></div><div class="v-whatsapp-badge"><i class="fa-brands fa-whatsapp"></i> Enviado!</div></div></div>',
                 desc: 'Com um layout claro e profissional, o sistema gera o detalhamento completo de cada pedido em formato PDF.',
                 benefit: 'Gera confiança absurda. Seu cliente recebe o link seguro contendo o comprovante da compra direto no WhatsApp. Adeus blocos de papel.'
             },
             'pdv': {
                 title: '<i class="fa-solid fa-cart-shopping"></i> Gestão de Pedidos',
-                visual: `
-                    <div class="visual-wrapper">
-                        <div class="v-checkout">
-                            <div class="v-item"><i class="fa-solid fa-box"></i> Produto A <span>R$ 50</span></div>
-                            <div class="v-item"><i class="fa-solid fa-box"></i> Produto B <span>R$ 30</span></div>
-                            <div class="v-btn">Registrar Venda <i class="fa-solid fa-check"></i></div>
-                        </div>
-                    </div>
-                `,
+                visual: '<div class="visual-wrapper"><div class="v-checkout"><div class="v-item"><i class="fa-solid fa-box"></i> Produto A <span>R$ 50</span></div><div class="v-item"><i class="fa-solid fa-box"></i> Produto B <span>R$ 30</span></div><div class="v-btn">Registrar Venda <i class="fa-solid fa-check"></i></div></div></div>',
                 desc: 'Uma interface limpa e focada em conversão para você registrar cada venda que entra no seu balcão ou delivery.',
                 benefit: 'Você puxa o cliente, adiciona múltiplos produtos, e com um clique a venda é salva, o lucro calculado e o histórico atualizado.'
             },
             'custos': {
                 title: '<i class="fa-solid fa-box-open"></i> Controle de Custos',
-                visual: `
-                    <div class="visual-wrapper">
-                        <div class="v-balance">
-                            <div class="v-green"><i class="fa-solid fa-arrow-trend-up"></i> Faturamento</div>
-                            <div class="v-red"><i class="fa-solid fa-arrow-trend-down"></i> Custos Reais</div>
-                            <div class="v-total">Lucro Líquido <i class="fa-solid fa-sack-dollar"></i></div>
-                        </div>
-                    </div>
-                `,
+                visual: '<div class="visual-wrapper"><div class="v-balance"><div class="v-green"><i class="fa-solid fa-arrow-trend-up"></i> Faturamento</div><div class="v-red"><i class="fa-solid fa-arrow-trend-down"></i> Custos Reais</div><div class="v-total">Lucro Líquido <i class="fa-solid fa-sack-dollar"></i></div></div></div>',
                 desc: 'O módulo financeiro separa exatamente o dinheiro que entrou (Faturamento Bruto) do que você gastou para produzir ou revender (Custo).',
                 benefit: 'Fim do achismo. O sistema calcula a diferença e te mostra o seu Lucro Líquido Real. É a saúde do seu negócio na palma da mão.'
             },
             'radar': {
                 title: '<i class="fa-solid fa-satellite-dish"></i> Radar Inteligente',
-                visual: `
-                    <div class="visual-wrapper">
-                        <i class="fa-solid fa-satellite-dish v-radar-icon"></i>
-                        <div class="v-client v-green"><i class="fa-solid fa-circle-check"></i> Cliente Ativo</div>
-                        <div class="v-client v-red"><i class="fa-solid fa-triangle-exclamation"></i> Cliente Sumido</div>
-                    </div>
-                `,
+                visual: '<div class="visual-wrapper"><i class="fa-solid fa-satellite-dish v-radar-icon"></i><div class="v-client v-green"><i class="fa-solid fa-circle-check"></i> Cliente Ativo</div><div class="v-client v-red"><i class="fa-solid fa-triangle-exclamation"></i> Cliente Sumido</div></div>',
                 desc: 'Nossa inteligência artificial organiza a sua base de clientes com base na recência da última compra.',
                 benefit: 'Identifique clientes com o status "Ativo" e recupere vendas de clientes que sumiram. É um CRM de altíssima conversão.'
             },
             'exportacao': {
                 title: '<i class="fa-solid fa-file-excel"></i> Exportação Total',
-                visual: `
-                    <div class="visual-wrapper">
-                        <div class="v-cloud"><i class="fa-solid fa-cloud-arrow-down"></i></div>
-                        <div class="exp-visual" style="display:flex;">
-                            <div class="v-file pdf"><i class="fa-solid fa-file-pdf"></i> PDF</div>
-                            <div class="v-file csv"><i class="fa-solid fa-file-csv"></i> CSV</div>
-                        </div>
-                    </div>
-                `,
+                visual: '<div class="visual-wrapper"><div class="v-cloud"><i class="fa-solid fa-cloud-arrow-down"></i></div><div class="exp-visual" style="display:flex;"><div class="v-file pdf"><i class="fa-solid fa-file-pdf"></i> PDF</div><div class="v-file csv"><i class="fa-solid fa-file-csv"></i> CSV</div></div></div>',
                 desc: 'Uma central dedicada exclusivamente à documentação e contabilidade da sua pequena empresa.',
                 benefit: 'Você é dono dos seus dados. Baixe relatórios financeiros em PDF para o seu contador ou jogue todos os seus dados no Excel.'
             }
@@ -503,9 +439,7 @@
         }
 
         function closeModal(event) {
-            if (event.target === modalOverlay) {
-                forceCloseModal();
-            }
+            if (event.target === modalOverlay) { forceCloseModal(); }
         }
 
         function forceCloseModal() {
@@ -513,6 +447,5 @@
             document.body.style.overflow = 'auto'; 
         }
     </script>
-
 </body>
 </html>
