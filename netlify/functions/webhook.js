@@ -1,59 +1,68 @@
-exports.handler = async (event) => {
-    // Aceita apenas requisições POST da Kiwify
-    if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Apenas POST' };
+const { createClient } = require('@supabase/supabase-js');
+
+// Conexão com o Supabase
+const supabaseUrl = process.env.SUPABASE_URL || 'https://iazehdwsnmunglhdtize.supabase.co';
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY; // Chave de serviço (bypass RLS)
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+exports.handler = async (event, context) => {
+    // Apenas aceita requisições POST (que é o que a Kiwify manda)
+    if (event.httpMethod !== 'POST') {
+        return { statusCode: 405, body: 'Método não permitido' };
+    }
 
     try {
+        // Lê os dados que a Kiwify enviou
         const body = JSON.parse(event.body);
-        
-        // Verifica se o pagamento foi aprovado
-        if (body.order_status !== 'paid') {
-            return { statusCode: 200, body: 'Ignorado: não é pagamento aprovado' };
+
+        // Verifica se é um aviso de COMPRA APROVADA
+        if (body.order_status === 'paid') {
+            const emailCliente = body.Customer.email;
+            
+            // Pega o nome do produto exatamente como está escrito na Kiwify
+            const nomeProduto = body.Product.product_name.toLowerCase();
+
+            // A MÁGICA ACONTECE AQUI: Descobre qual plano ele comprou
+            let planoComprado = 'basico'; // Plano padrão
+            
+            if (nomeProduto.includes('premium')) {
+                planoComprado = 'premium';
+            } else if (nomeProduto.includes('pro')) {
+                planoComprado = 'pro';
+            }
+
+            // 1. Verifica se o cliente já tem conta na tabela 'perfis'
+            const { data: perfilExistente } = await supabase
+                .from('perfis')
+                .select('*')
+                .eq('email', emailCliente)
+                .single();
+
+            if (perfilExistente) {
+                // SE ELE JÁ EXISTE: Apenas atualiza o plano dele para o novo que ele comprou
+                await supabase
+                    .from('perfis')
+                    .update({ plano: planoComprado })
+                    .eq('email', emailCliente);
+            } else {
+                // SE ELE NÃO EXISTE (Comprou antes de criar conta no site):
+                // Cria um perfil novo já com o plano Premium/Pro ativado
+                await supabase
+                    .from('perfis')
+                    .insert([{ email: emailCliente, plano: planoComprado }]);
+            }
         }
 
-        const emailComprador = body.Customer.email;
-        let planoComprado = 'basico'; // Padrão
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: 'Webhook processado com sucesso!' })
+        };
 
-        // Busca o NOME do plano ou do produto vendido
-        let nomeDoPlano = '';
-        if (body.Subscription && body.Subscription.plan && body.Subscription.plan.name) {
-            // Se for uma assinatura, pega o nome do plano (ex: "Pro", "Premium")
-            nomeDoPlano = body.Subscription.plan.name.toLowerCase();
-        } else if (body.product_name) {
-            // Se for um produto avulso, pega o nome do produto
-            nomeDoPlano = body.product_name.toLowerCase();
-        }
-
-        // Define o plano baseado na palavra-chave encontrada no nome
-        if (nomeDoPlano.includes('pro')) {
-            planoComprado = 'pro';
-        } else if (nomeDoPlano.includes('premium')) {
-            planoComprado = 'premium';
-        }
-
-        // Chama o banco de dados (Supabase) para atualizar o usuário
-        const response = await fetch(`${process.env.SUPABASE_URL}/rest/v1/rpc/atualizar_plano_por_email`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': process.env.SUPABASE_SERVICE_KEY,
-                'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`
-            },
-            body: JSON.stringify({
-                p_email: emailComprador,
-                p_novo_plano: planoComprado
-            })
-        });
-
-        if (!response.ok) {
-            const err = await response.text();
-            console.log("Erro no Supabase:", err);
-            return { statusCode: 500, body: 'Erro ao atualizar banco de dados' };
-        }
-
-        return { statusCode: 200, body: `Sucesso! Plano ${planoComprado} ativado para ${emailComprador}` };
-        
     } catch (error) {
-        console.log("Erro no Webhook:", error);
-        return { statusCode: 500, body: 'Erro interno no servidor' };
+        console.error('Erro no webhook:', error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Erro interno no servidor' })
+        };
     }
 };
