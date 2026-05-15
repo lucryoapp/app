@@ -2,36 +2,40 @@ const { createClient } = require('@supabase/supabase-js');
 
 // Conexão com o Supabase
 const supabaseUrl = process.env.SUPABASE_URL || 'https://iazehdwsnmunglhdtize.supabase.co';
-const supabaseKey = process.env.SUPABASE_SERVICE_KEY; // Chave de serviço (bypass RLS)
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY; // Chave de serviço
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 exports.handler = async (event, context) => {
-    // Apenas aceita requisições POST (que é o que a Kiwify manda)
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Método não permitido' };
     }
 
     try {
-        // Lê os dados que a Kiwify enviou
         const body = JSON.parse(event.body);
 
-        // Verifica se é um aviso de COMPRA APROVADA
+        // Verifica se é uma compra aprovada
         if (body.order_status === 'paid') {
             const emailCliente = body.Customer.email;
             
-            // Pega o nome do produto exatamente como está escrito na Kiwify
-            const nomeProduto = body.Product.product_name.toLowerCase();
-
-            // A MÁGICA ACONTECE AQUI: Descobre qual plano ele comprou
-            let planoComprado = 'basico'; // Plano padrão
+            // Pega o nome do produto principal
+            const nomeProduto = body.Product && body.Product.product_name ? body.Product.product_name.toLowerCase() : '';
             
-            if (nomeProduto.includes('premium')) {
+            // Pega o nome do plano de assinatura (A PEÇA QUE FALTAVA)
+            const nomePlano = body.Subscription && body.Subscription.plan && body.Subscription.plan.name ? body.Subscription.plan.name.toLowerCase() : '';
+
+            // Junta os dois nomes para a IA do webhook analisar
+            const nomeVerificacao = nomeProduto + " " + nomePlano;
+
+            // A MÁGICA: Descobre qual plano ele comprou analisando o Produto e a Assinatura
+            let planoComprado = 'basico'; // Padrão
+            
+            if (nomeVerificacao.includes('premium')) {
                 planoComprado = 'premium';
-            } else if (nomeProduto.includes('pro')) {
+            } else if (nomeVerificacao.includes('pro')) {
                 planoComprado = 'pro';
             }
 
-            // 1. Verifica se o cliente já tem conta na tabela 'perfis'
+            // Verifica se o cliente já tem conta
             const { data: perfilExistente } = await supabase
                 .from('perfis')
                 .select('*')
@@ -39,14 +43,13 @@ exports.handler = async (event, context) => {
                 .single();
 
             if (perfilExistente) {
-                // SE ELE JÁ EXISTE: Apenas atualiza o plano dele para o novo que ele comprou
+                // Atualiza o plano
                 await supabase
                     .from('perfis')
                     .update({ plano: planoComprado })
                     .eq('email', emailCliente);
             } else {
-                // SE ELE NÃO EXISTE (Comprou antes de criar conta no site):
-                // Cria um perfil novo já com o plano Premium/Pro ativado
+                // Cria conta nova com o plano correto
                 await supabase
                     .from('perfis')
                     .insert([{ email: emailCliente, plano: planoComprado }]);
