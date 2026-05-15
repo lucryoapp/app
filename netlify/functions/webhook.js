@@ -2,7 +2,7 @@ const { createClient } = require('@supabase/supabase-js');
 
 // Conexão com o Supabase
 const supabaseUrl = process.env.SUPABASE_URL || 'https://iazehdwsnmunglhdtize.supabase.co';
-const supabaseKey = process.env.SUPABASE_SERVICE_KEY; // Chave de serviço
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 exports.handler = async (event, context) => {
@@ -13,29 +13,36 @@ exports.handler = async (event, context) => {
     try {
         const body = JSON.parse(event.body);
 
-        // Verifica se é uma compra aprovada
+        // 🔴 ISSO VAI IMPRIMIR A MENSAGEM DA KIWIFY NA SUA TELA PRETA
+        console.log("=== CHEGOU UMA NOVA VENDA ===");
+        console.log("Status da ordem:", body.order_status);
+        console.log("Email do cliente:", body.Customer?.email || body.customer?.email);
+
         if (body.order_status === 'paid') {
-            const emailCliente = body.Customer.email;
+            const emailCliente = body.Customer?.email || body.customer?.email;
             
-            // Pega o nome do produto principal
-            const nomeProduto = body.Product && body.Product.product_name ? body.Product.product_name.toLowerCase() : '';
-            
-            // Pega o nome do plano de assinatura (A PEÇA QUE FALTAVA)
-            const nomePlano = body.Subscription && body.Subscription.plan && body.Subscription.plan.name ? body.Subscription.plan.name.toLowerCase() : '';
+            // Vamos caçar o nome do plano em TODOS os lugares possíveis que a Kiwify usa
+            const nome1 = body.Product?.product_name || '';
+            const nome2 = body.product?.name || '';
+            const nome3 = body.Subscription?.plan?.name || '';
+            const nome4 = body.subscription?.plan?.name || '';
 
-            // Junta os dois nomes para a IA do webhook analisar
-            const nomeVerificacao = nomeProduto + " " + nomePlano;
-
-            // A MÁGICA: Descobre qual plano ele comprou analisando o Produto e a Assinatura
-            let planoComprado = 'basico'; // Padrão
+            // Junta tudo numa frase só, tudo em minúsculo, para não ter como escapar
+            const nomeVerificacao = `${nome1} ${nome2} ${nome3} ${nome4}`.toLowerCase();
             
+            console.log("Palavras encontradas pela IA:", nomeVerificacao);
+
+            let planoComprado = 'basico'; // Padrão de segurança
+            
+            // Verifica qual palavra-chave está dentro da frase
             if (nomeVerificacao.includes('premium')) {
                 planoComprado = 'premium';
             } else if (nomeVerificacao.includes('pro')) {
                 planoComprado = 'pro';
             }
 
-            // Verifica se o cliente já tem conta
+            console.log(`➡️ PLANO DEFINIDO: ${planoComprado}`);
+
             const { data: perfilExistente } = await supabase
                 .from('perfis')
                 .select('*')
@@ -43,29 +50,17 @@ exports.handler = async (event, context) => {
                 .single();
 
             if (perfilExistente) {
-                // Atualiza o plano
-                await supabase
-                    .from('perfis')
-                    .update({ plano: planoComprado })
-                    .eq('email', emailCliente);
+                await supabase.from('perfis').update({ plano: planoComprado }).eq('email', emailCliente);
+                console.log("Conta atualizada com sucesso!");
             } else {
-                // Cria conta nova com o plano correto
-                await supabase
-                    .from('perfis')
-                    .insert([{ email: emailCliente, plano: planoComprado }]);
+                await supabase.from('perfis').insert([{ email: emailCliente, plano: planoComprado }]);
+                console.log("Conta criada com sucesso!");
             }
         }
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ message: 'Webhook processado com sucesso!' })
-        };
-
+        return { statusCode: 200, body: JSON.stringify({ message: 'OK' }) };
     } catch (error) {
         console.error('Erro no webhook:', error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: 'Erro interno no servidor' })
-        };
+        return { statusCode: 500, body: JSON.stringify({ error: 'Erro' }) };
     }
 };
